@@ -57,7 +57,7 @@ public class User {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", trackVotes=" + trackVotes + '\'' +
-                ", lastLogin=" + lastLogin +
+                ", lastLogin=" + lastLogin + '\'' +
                 '}';
     }
 

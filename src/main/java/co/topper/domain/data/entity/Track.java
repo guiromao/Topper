@@ -1,5 +1,6 @@
 package co.topper.domain.data.entity;
 
+import com.mongodb.lang.Nullable;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -17,6 +18,7 @@ public class Track {
     private static final String FIELD_NAME = "name";
     private static final String FIELD_ARTIST_ID = "artistId";
     private static final String FIELD_VOTES = "votes";
+    private static final String FIELD_COVER_URL = "coverUrl";
 
     @Id
     private final String id;
@@ -30,14 +32,19 @@ public class Track {
     @Field(FIELD_VOTES)
     private final BigInteger votes;
 
+    @Field(FIELD_COVER_URL)
+    private final String coverUrl;
+
     public Track(String id,
                  String name,
                  String artistId,
-                 BigInteger votes) {
+                 BigInteger votes,
+                 @Nullable String coverUrl) {
         this.id = id;
         this.name = name;
         this.artistId = artistId;
         this.votes = votes;
+        this.coverUrl = coverUrl;
     }
 
     @Override
@@ -46,7 +53,8 @@ public class Track {
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", artistId='" + artistId + '\'' +
-                ", votes=" + votes +
+                ", votes=" + votes + '\'' +
+                ", coverUrl=" + coverUrl + '\'' +
                 '}';
     }
 
@@ -66,6 +74,11 @@ public class Track {
         return votes;
     }
 
+    @Nullable
+    public String getCoverUrl() {
+        return coverUrl;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -77,12 +90,13 @@ public class Track {
         Track track = (Track) o;
         return id.equals(track.id) && name.equals(track.name)
                 && artistId.equals(track.artistId)
-                && votes.equals(track.votes);
+                && votes.equals(track.votes)
+                && Objects.equals(coverUrl, track.coverUrl);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, artistId, votes);
+        return Objects.hash(id, name, artistId, votes, coverUrl);
     }
 
 }

@@ -1,5 +1,6 @@
 package co.topper.domain.data.entity;
 
+import com.mongodb.lang.Nullable;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -14,6 +15,7 @@ public class Artist {
     public static final String ARTIST_COLLECTION = "artist";
 
     private static final String FIELD_NAME = "name";
+    private static final String FIELD_IMAGE_URL = "imageUrl";
 
     @Id
     private final String id;
@@ -21,9 +23,13 @@ public class Artist {
     @Field(FIELD_NAME)
     private final String name;
 
-    public Artist(String id, String name) {
+    @Field(FIELD_IMAGE_URL)
+    private final String imageUrl;
+
+    public Artist(String id, String name, @Nullable String imageUrl) {
         this.id = id;
         this.name = name;
+        this.imageUrl = imageUrl;
     }
 
     @Override
@@ -31,6 +37,7 @@ public class Artist {
         return "Artist{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
+                ", imageUrl'" + imageUrl + '\'' +
                 '}';
     }
 
@@ -42,6 +49,10 @@ public class Artist {
         return name;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -51,12 +62,13 @@ public class Artist {
             return false;
         }
         Artist artist = (Artist) o;
-        return id.equals(artist.id) && name.equals(artist.name);
+        return id.equals(artist.id) && name.equals(artist.name)
+                && Objects.equals(imageUrl, artist.imageUrl);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id, name, imageUrl);
     }
 
 }
