@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.math.BigInteger;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -20,6 +21,7 @@ public class User {
     private static final String FIELD_USERNAME = "username";
     private static final String FIELD_PASSWORD = "password";
     private static final String FIELD_TRACK_VOTES = "trackVotes";
+    private static final String FIELD_LAST_LOGIN = "lastLogin";
 
     @Id
     private final String id;
@@ -33,14 +35,19 @@ public class User {
     @Field(FIELD_TRACK_VOTES)
     private final Map<String, BigInteger> trackVotes;
 
+    @Field(FIELD_LAST_LOGIN)
+    private final LocalDate lastLogin;
+
     public User(String id,
                 String username,
                 String password,
-                Map<String, BigInteger> trackVotes) {
+                Map<String, BigInteger> trackVotes,
+                LocalDate lastLogin) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.trackVotes = trackVotes;
+        this.lastLogin = lastLogin;
     }
 
     @Override
@@ -49,15 +56,17 @@ public class User {
                 "id='" + id + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
-                ", trackVotes=" + trackVotes +
+                ", trackVotes=" + trackVotes + '\'' +
+                ", lastLogin=" + lastLogin +
                 '}';
     }
 
     public static User create(String username, String password) {
         final String id = UUID.randomUUID().toString();
         final Map<String, BigInteger> votesMap = new HashMap<>();
+        final LocalDate firstLogin = LocalDate.now();
 
-        return new User(id, username, password, votesMap);
+        return new User(id, username, password, votesMap, firstLogin);
     }
 
     public String getId() {
@@ -76,6 +85,10 @@ public class User {
         return trackVotes;
     }
 
+    public LocalDate getLastLogin() {
+        return lastLogin;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -86,12 +99,13 @@ public class User {
         }
         User user = (User) o;
         return id.equals(user.id) && username.equals(user.username)
-                && password.equals(user.password) && trackVotes.equals(user.trackVotes);
+                && password.equals(user.password) && trackVotes.equals(user.trackVotes)
+                && lastLogin.equals(user.lastLogin);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, password, trackVotes);
+        return Objects.hash(id, username, password, trackVotes, lastLogin);
     }
 
 }
