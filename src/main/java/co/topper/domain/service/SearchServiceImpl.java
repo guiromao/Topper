@@ -2,8 +2,11 @@ package co.topper.domain.service;
 
 import co.topper.domain.data.converter.TrackConverter;
 import co.topper.domain.data.dto.TrackDto;
+import co.topper.domain.data.entity.TrackEntity;
+import co.topper.domain.exception.ConnectivityFailureException;
 import org.apache.hc.core5.http.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
@@ -14,6 +17,8 @@ import se.michaelthelin.spotify.requests.data.search.simplified.SearchTracksRequ
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Set;
+
+import static co.topper.configuration.RedisConfiguration.CACHE_TRACKS_SERVICE;
 
 @Service
 public class SearchServiceImpl implements SearchService {
@@ -31,6 +36,7 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Override
+    @Cacheable(value = CACHE_TRACKS_SERVICE)
     public Set<TrackDto> searchTracks(String value) {
         SearchTracksRequest searchRequest = spotifyApi.searchTracks(value)
                 .limit(NUMBER_RESULTS)
@@ -43,9 +49,8 @@ public class SearchServiceImpl implements SearchService {
 
         } catch (IOException | SpotifyWebApiException | ParseException e) {
             e.printStackTrace();
+            throw new ConnectivityFailureException(TrackEntity.class);
         }
-
-        return Collections.emptySet();
     }
 
 }
