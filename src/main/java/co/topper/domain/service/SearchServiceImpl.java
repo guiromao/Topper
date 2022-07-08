@@ -3,6 +3,7 @@ package co.topper.domain.service;
 import co.topper.domain.data.converter.TrackConverter;
 import co.topper.domain.data.dto.TrackDto;
 import org.apache.hc.core5.http.ParseException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
@@ -22,6 +23,7 @@ public class SearchServiceImpl implements SearchService {
     private final SpotifyApi spotifyApi;
     private final TrackConverter trackConverter;
 
+    @Autowired
     public SearchServiceImpl(SpotifyApi spotifyApi,
                              TrackConverter trackConverter) {
         this.spotifyApi = spotifyApi;
