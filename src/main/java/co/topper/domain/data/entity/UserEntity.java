@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.query.Update;
 
 import java.math.BigInteger;
 import java.time.Instant;
@@ -11,6 +12,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 import static co.topper.configuration.constants.UserConstants.FIELD_LAST_LOGIN;
@@ -107,6 +109,52 @@ public class UserEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id, username, password, trackVotes, lastLogin);
+    }
+
+    public static class UpdateBuilder {
+
+        private final Update update;
+
+        private UpdateBuilder() {
+            update = new Update();
+        }
+
+        public static UpdateBuilder create() {
+            return new UpdateBuilder();
+        }
+
+        public UpdateBuilder setUsername(String username) {
+            set(FIELD_USERNAME, username);
+            return this;
+        }
+
+        public UpdateBuilder setPassword(String password) {
+            set(FIELD_PASSWORD, password);
+            return this;
+        }
+
+        public UpdateBuilder setTrackVotes(Map<String, BigInteger> votes) {
+            set(FIELD_TRACK_VOTES, votes);
+            return this;
+        }
+
+        public UpdateBuilder setLastLogin(Instant lastLogin) {
+            set(FIELD_LAST_LOGIN, lastLogin);
+            return this;
+        }
+
+        private void set(String field, Object value) {
+            update.set(field, value);
+        }
+
+        public Optional<Update> build() {
+            if (!Optional.empty().equals(update)) {
+                Optional.of(update);
+            }
+
+            return Optional.empty();
+        }
+
     }
 
 }

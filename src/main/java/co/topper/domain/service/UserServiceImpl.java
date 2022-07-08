@@ -3,11 +3,15 @@ package co.topper.domain.service;
 import co.topper.domain.data.converter.UserConverter;
 import co.topper.domain.data.dto.UserDto;
 import co.topper.domain.data.entity.UserEntity;
+import co.topper.domain.data.entity.UserEntity.UpdateBuilder;
 import co.topper.domain.data.repository.UserRepository;
 import co.topper.domain.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.util.HashMap;
 import java.util.Objects;
 
 @Service
@@ -25,6 +29,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto saveUser(UserDto userDto) {
+        UserEntity user = fetchUser(userDto);
+
+        return userConverter.toDto(userRepository.updateUser(user.getId(), updateOf(user)));
+    }
+
+    private UserEntity fetchUser(UserDto userDto) {
         UserEntity user;
 
         if (Objects.isNull(userDto.getUserId()) ||
@@ -35,6 +45,21 @@ public class UserServiceImpl implements UserService {
                     .orElseThrow(() -> new ResourceNotFoundException(userDto.getUserId(), UserEntity.class));
         }
 
-        return userConverter.toDto(userRepository.save(user));
+        return user;
     }
+
+    private Update updateOf(UserEntity user) {
+        UpdateBuilder updateBuilder = UpdateBuilder.create()
+                .setUsername(user.getUsername())
+                .setPassword(user.getPassword())
+                .setLastLogin(Instant.now());
+
+        if (user.getTrackVotes().isEmpty()) {
+            updateBuilder.setTrackVotes(new HashMap<>());
+        }
+
+        return updateBuilder.build()
+                .orElseThrow(() -> new RuntimeException("Error creating UserEntity Update"));
+    }
+
 }
