@@ -1,24 +1,24 @@
 package co.topper.domain.data.entity;
 
-import com.mongodb.lang.Nullable;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.TypeAlias;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.math.BigInteger;
-import java.util.Objects;
+import java.util.Set;
 
 @Document(collection = TrackEntity.TRACK_COLLECTION)
 @TypeAlias(TrackEntity.TRACK_COLLECTION)
+@CompoundIndex(name = "votes_idx", def = "{'votes' : 1}")
 public class TrackEntity {
 
     public static final String TRACK_COLLECTION = "track";
 
     private static final String FIELD_NAME = "name";
-    private static final String FIELD_ARTIST_ID = "artistId";
+    private static final String FIELD_ARTIST_IDS = "artistIds";
     private static final String FIELD_VOTES = "votes";
-    private static final String FIELD_COVER_URL = "coverUrl";
 
     @Id
     private final String id;
@@ -26,35 +26,34 @@ public class TrackEntity {
     @Field(FIELD_NAME)
     private final String name;
 
-    @Field(FIELD_ARTIST_ID)
-    private final String artistId;
+    @Field(FIELD_ARTIST_IDS)
+    private final Set<String> artistIds;
 
     @Field(FIELD_VOTES)
     private final BigInteger votes;
 
-    @Field(FIELD_COVER_URL)
-    private final String coverUrl;
-
     public TrackEntity(String id,
                        String name,
-                       String artistId,
-                       BigInteger votes,
-                       @Nullable String coverUrl) {
+                       Set<String> artistIds,
+                       BigInteger votes) {
         this.id = id;
         this.name = name;
-        this.artistId = artistId;
+        this.artistIds = artistIds;
         this.votes = votes;
-        this.coverUrl = coverUrl;
     }
 
-    @Override
-    public String toString() {
-        return "Track{" +
+    public static TrackEntity create(String id, String name, Set<String> artistIds) {
+        BigInteger votes = BigInteger.ZERO;
+
+        return new TrackEntity(id, name, artistIds, votes);
+    }
+
+    @Override public String toString() {
+        return "TrackEntity{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
-                ", artistId='" + artistId + '\'' +
-                ", votes=" + votes + '\'' +
-                ", coverUrl=" + coverUrl + '\'' +
+                ", artistIds=" + artistIds +
+                ", votes=" + votes +
                 '}';
     }
 
@@ -66,17 +65,12 @@ public class TrackEntity {
         return name;
     }
 
-    public String getArtistId() {
-        return artistId;
+    public Set<String> getArtistId() {
+        return artistIds;
     }
 
     public BigInteger getVotes() {
         return votes;
-    }
-
-    @Nullable
-    public String getCoverUrl() {
-        return coverUrl;
     }
 
     @Override
@@ -89,14 +83,8 @@ public class TrackEntity {
         }
         TrackEntity track = (TrackEntity) o;
         return id.equals(track.id) && name.equals(track.name)
-                && artistId.equals(track.artistId)
-                && votes.equals(track.votes)
-                && Objects.equals(coverUrl, track.coverUrl);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, artistId, votes, coverUrl);
+                && artistIds.equals(track.artistIds)
+                && votes.equals(track.votes);
     }
 
 }

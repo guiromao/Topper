@@ -2,6 +2,7 @@ package co.topper.domain.data.entity;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.TypeAlias;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.query.Update;
@@ -22,6 +23,7 @@ import static co.topper.configuration.constants.UserConstants.FIELD_USERNAME;
 
 @Document(collection = UserEntity.USER_COLLECTION)
 @TypeAlias(UserEntity.USER_COLLECTION)
+@CompoundIndex(name = "votes_idx", def = "{'trackVotes' : 1}")
 public class UserEntity {
 
     public static final String USER_COLLECTION = "user";

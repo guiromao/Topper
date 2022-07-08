@@ -11,7 +11,6 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.Objects;
 
 @Service
@@ -49,14 +48,10 @@ public class UserServiceImpl implements UserService {
     }
 
     private Update updateOf(UserEntity user) {
-        UpdateBuilder updateBuilder = UpdateBuilder.create()
+        final UpdateBuilder updateBuilder = UpdateBuilder.create()
                 .setUsername(user.getUsername())
                 .setPassword(user.getPassword())
                 .setLastLogin(Instant.now());
-
-        if (user.getTrackVotes().isEmpty()) {
-            updateBuilder.setTrackVotes(new HashMap<>());
-        }
 
         return updateBuilder.build()
                 .orElseThrow(() -> new RuntimeException("Error creating UserEntity Update"));
