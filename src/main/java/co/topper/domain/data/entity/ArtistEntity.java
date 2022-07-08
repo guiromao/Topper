@@ -8,9 +8,9 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Objects;
 
-@Document(collection = Artist.ARTIST_COLLECTION)
-@TypeAlias(Artist.ARTIST_COLLECTION)
-public class Artist {
+@Document(collection = ArtistEntity.ARTIST_COLLECTION)
+@TypeAlias(ArtistEntity.ARTIST_COLLECTION)
+public class ArtistEntity {
 
     public static final String ARTIST_COLLECTION = "artist";
 
@@ -26,7 +26,7 @@ public class Artist {
     @Field(FIELD_IMAGE_URL)
     private final String imageUrl;
 
-    public Artist(String id, String name, @Nullable String imageUrl) {
+    public ArtistEntity(String id, String name, @Nullable String imageUrl) {
         this.id = id;
         this.name = name;
         this.imageUrl = imageUrl;
@@ -61,7 +61,7 @@ public class Artist {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Artist artist = (Artist) o;
+        ArtistEntity artist = (ArtistEntity) o;
         return id.equals(artist.id) && name.equals(artist.name)
                 && Objects.equals(imageUrl, artist.imageUrl);
     }

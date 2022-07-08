@@ -6,22 +6,23 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.math.BigInteger;
-import java.time.LocalDate;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-@Document(collection = User.USER_COLLECTION)
-@TypeAlias(User.USER_COLLECTION)
-public class User {
+import static co.topper.configuration.constants.UserConstants.FIELD_LAST_LOGIN;
+import static co.topper.configuration.constants.UserConstants.FIELD_PASSWORD;
+import static co.topper.configuration.constants.UserConstants.FIELD_TRACK_VOTES;
+import static co.topper.configuration.constants.UserConstants.FIELD_USERNAME;
+
+@Document(collection = UserEntity.USER_COLLECTION)
+@TypeAlias(UserEntity.USER_COLLECTION)
+public class UserEntity {
 
     public static final String USER_COLLECTION = "user";
-
-    private static final String FIELD_USERNAME = "username";
-    private static final String FIELD_PASSWORD = "password";
-    private static final String FIELD_TRACK_VOTES = "trackVotes";
-    private static final String FIELD_LAST_LOGIN = "lastLogin";
 
     @Id
     private final String id;
@@ -36,13 +37,13 @@ public class User {
     private final Map<String, BigInteger> trackVotes;
 
     @Field(FIELD_LAST_LOGIN)
-    private final LocalDate lastLogin;
+    private final Instant lastLogin;
 
-    public User(String id,
-                String username,
-                String password,
-                Map<String, BigInteger> trackVotes,
-                LocalDate lastLogin) {
+    public UserEntity(String id,
+                      String username,
+                      String password,
+                      Map<String, BigInteger> trackVotes,
+                      Instant lastLogin) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -61,12 +62,12 @@ public class User {
                 '}';
     }
 
-    public static User create(String username, String password) {
+    public static UserEntity create(String username, String password) {
         final String id = UUID.randomUUID().toString();
         final Map<String, BigInteger> votesMap = new HashMap<>();
-        final LocalDate firstLogin = LocalDate.now();
+        final Instant firstLogin = Instant.now().truncatedTo(ChronoUnit.SECONDS);
 
-        return new User(id, username, password, votesMap, firstLogin);
+        return new UserEntity(id, username, password, votesMap, firstLogin);
     }
 
     public String getId() {
@@ -85,7 +86,7 @@ public class User {
         return trackVotes;
     }
 
-    public LocalDate getLastLogin() {
+    public Instant getLastLogin() {
         return lastLogin;
     }
 
@@ -97,7 +98,7 @@ public class User {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        User user = (User) o;
+        UserEntity user = (UserEntity) o;
         return id.equals(user.id) && username.equals(user.username)
                 && password.equals(user.password) && trackVotes.equals(user.trackVotes)
                 && lastLogin.equals(user.lastLogin);

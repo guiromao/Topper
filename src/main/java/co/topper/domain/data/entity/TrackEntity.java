@@ -9,9 +9,9 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import java.math.BigInteger;
 import java.util.Objects;
 
-@Document(collection = Track.TRACK_COLLECTION)
-@TypeAlias(Track.TRACK_COLLECTION)
-public class Track {
+@Document(collection = TrackEntity.TRACK_COLLECTION)
+@TypeAlias(TrackEntity.TRACK_COLLECTION)
+public class TrackEntity {
 
     public static final String TRACK_COLLECTION = "track";
 
@@ -35,11 +35,11 @@ public class Track {
     @Field(FIELD_COVER_URL)
     private final String coverUrl;
 
-    public Track(String id,
-                 String name,
-                 String artistId,
-                 BigInteger votes,
-                 @Nullable String coverUrl) {
+    public TrackEntity(String id,
+                       String name,
+                       String artistId,
+                       BigInteger votes,
+                       @Nullable String coverUrl) {
         this.id = id;
         this.name = name;
         this.artistId = artistId;
@@ -87,7 +87,7 @@ public class Track {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Track track = (Track) o;
+        TrackEntity track = (TrackEntity) o;
         return id.equals(track.id) && name.equals(track.name)
                 && artistId.equals(track.artistId)
                 && votes.equals(track.votes)
