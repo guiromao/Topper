@@ -1,6 +1,7 @@
 package co.topper.domain.data.dto;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -30,6 +31,7 @@ public class UserDto {
     private final Map<String, BigInteger> trackVotes;
     private final Instant lastLogin;
 
+    @JsonCreator
     public UserDto(@Nullable @JsonProperty(PROPERTY_ID) String userId,
                    @JsonProperty(PROPERTY_USERNAME) String username,
                    @JsonProperty(PROPERTY_PASSWORD) String password,
@@ -87,9 +89,10 @@ public class UserDto {
             return false;
         }
         UserDto userDto = (UserDto) o;
-        return userId.equals(userDto.userId) && username.equals(userDto.username) && password.equals(userDto.password) &&
-                trackVotes.equals(userDto.trackVotes) &&
-                lastLogin.equals(userDto.lastLogin);
+        return Objects.equals(userId, userDto.getUserId()) && username.equals(userDto.username) &&
+                password.equals(userDto.password) &&
+                Objects.equals(trackVotes, userDto.getTrackVotes()) &&
+                Objects.equals(lastLogin, userDto.getLastLogin());
     }
 
     @Override
