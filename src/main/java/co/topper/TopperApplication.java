@@ -1,7 +1,8 @@
 package co.topper;
 
+import co.topper.domain.data.dto.AlbumDto;
 import co.topper.domain.data.dto.TrackDto;
-import co.topper.domain.service.DiscoverService;
+import co.topper.domain.service.MusicDiscoveryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -15,7 +16,7 @@ import java.util.Set;
 public class TopperApplication implements CommandLineRunner {
 
 	@Autowired
-	private DiscoverService searchService;
+	private MusicDiscoveryService discoveryService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(TopperApplication.class, args);
@@ -23,12 +24,16 @@ public class TopperApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		Set<TrackDto> tracks = searchService.searchTracks("I am the walrus");
+		Set<TrackDto> tracks = discoveryService.searchTracks("I am the walrus");
 
 		tracks.forEach(track -> {
 			System.out.print(track);
-			track.getArtistIds().forEach(id -> System.out.print(" | " + searchService.findArtistById(id)));
+			track.getArtistIds().forEach(id -> System.out.print(" | " + discoveryService.findArtistById(id)));
 			System.out.println();
 		});
+
+		Set<AlbumDto> albums = discoveryService.searchAlbums("Meteora");
+
+		albums.forEach(System.out::println);
 	}
 }

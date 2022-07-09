@@ -9,13 +9,13 @@ import java.util.Set;
 /**
  * Service that will use a 3rd party tool to collect music data
  */
-public interface DiscoverService {
+public interface MusicDiscoveryService {
 
     Set<TrackDto> searchTracks(String value);
 
     TrackDto findTrackById(String trackId);
 
-    Set<ArtistDto> searchArtists(String artist);
+    Set<ArtistDto> searchArtists(String value);
 
     ArtistDto findArtistById(String artistId);
 

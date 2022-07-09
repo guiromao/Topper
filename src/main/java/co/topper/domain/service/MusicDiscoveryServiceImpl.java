@@ -19,7 +19,6 @@ import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.model_objects.specification.Album;
 import se.michaelthelin.spotify.model_objects.specification.AlbumSimplified;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
-import se.michaelthelin.spotify.model_objects.specification.ArtistSimplified;
 import se.michaelthelin.spotify.model_objects.specification.Paging;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 import se.michaelthelin.spotify.requests.data.albums.GetAlbumRequest;
@@ -37,7 +36,7 @@ import static co.topper.configuration.RedisConfiguration.CACHE_ARTIST_SERVICE;
 import static co.topper.configuration.RedisConfiguration.CACHE_TRACKS_SERVICE;
 
 @Service
-public class DiscoverServiceImpl implements DiscoverService {
+public class MusicDiscoveryServiceImpl implements MusicDiscoveryService {
 
     private static final Integer NUMBER_RESULTS = 20;
 
@@ -47,10 +46,10 @@ public class DiscoverServiceImpl implements DiscoverService {
     private final AlbumConverter albumConverter;
 
     @Autowired
-    public DiscoverServiceImpl(SpotifyApi spotifyApi,
-                               TrackConverter trackConverter,
-                               ArtistConverter artistConverter,
-                               AlbumConverter albumConverter) {
+    public MusicDiscoveryServiceImpl(SpotifyApi spotifyApi,
+                                     TrackConverter trackConverter,
+                                     ArtistConverter artistConverter,
+                                     AlbumConverter albumConverter) {
         this.spotifyApi = spotifyApi;
         this.trackConverter = trackConverter;
         this.artistConverter = artistConverter;
@@ -90,8 +89,8 @@ public class DiscoverServiceImpl implements DiscoverService {
 
     @Override
     @Cacheable(value = CACHE_ARTIST_SERVICE)
-    public Set<ArtistDto> searchArtists(String artist) {
-        SearchArtistsRequest artistsRequest = spotifyApi.searchArtists(artist)
+    public Set<ArtistDto> searchArtists(String value) {
+        SearchArtistsRequest artistsRequest = spotifyApi.searchArtists(value)
                 .limit(NUMBER_RESULTS)
                 .build();
 

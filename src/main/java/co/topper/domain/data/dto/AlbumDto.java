@@ -1,9 +1,12 @@
 package co.topper.domain.data.dto;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
 
-public class AlbumDto {
+public class AlbumDto implements Serializable {
+
+    private static final long serialVersionUID = 2143214324L;
 
     private final String id;
     private final String name;
