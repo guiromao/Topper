@@ -12,6 +12,7 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 
+import static co.topper.configuration.constants.UserConstants.PROPERTY_EMAIL;
 import static co.topper.configuration.constants.UserConstants.PROPERTY_ID;
 import static co.topper.configuration.constants.UserConstants.PROPERTY_LAST_LOGIN;
 import static co.topper.configuration.constants.UserConstants.PROPERTY_PASSWORD;
@@ -28,6 +29,7 @@ public class UserDto {
     private final String userId;
     private final String username;
     private final String password;
+    private final String email;
     private final Map<String, BigInteger> trackVotes;
     private final Instant lastLogin;
 
@@ -35,11 +37,13 @@ public class UserDto {
     public UserDto(@Nullable @JsonProperty(PROPERTY_ID) String userId,
                    @JsonProperty(PROPERTY_USERNAME) String username,
                    @JsonProperty(PROPERTY_PASSWORD) String password,
+                   @JsonProperty(PROPERTY_EMAIL) String email,
                    @Nullable @JsonProperty(PROPERTY_TRACK_VOTES) Map<String, BigInteger> trackVotes,
                    @Nullable @JsonProperty(PROPERTY_LAST_LOGIN) Instant lastLogin) {
         this.userId = userId;
         this.username = username;
         this.password = password;
+        this.email = email;
         this.trackVotes = trackVotes;
         this.lastLogin = lastLogin;
     }
@@ -50,6 +54,7 @@ public class UserDto {
                 "userId='" + userId + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
                 ", trackVotes=" + trackVotes +
                 ", lastLogin=" + lastLogin +
                 '}';
@@ -68,6 +73,11 @@ public class UserDto {
     @JsonProperty(PROPERTY_PASSWORD)
     public String getPassword() {
         return password;
+    }
+
+    @JsonProperty(PROPERTY_EMAIL)
+    public String getEmail() {
+        return email;
     }
 
     @JsonProperty(PROPERTY_TRACK_VOTES)
@@ -89,15 +99,13 @@ public class UserDto {
             return false;
         }
         UserDto userDto = (UserDto) o;
-        return Objects.equals(userId, userDto.getUserId()) && username.equals(userDto.username) &&
-                password.equals(userDto.password) &&
-                Objects.equals(trackVotes, userDto.getTrackVotes()) &&
-                Objects.equals(lastLogin, userDto.getLastLogin());
+        return Objects.equals(userId, userDto.userId) && username.equals(userDto.username) && password.equals(userDto.password) &&
+                email.equals(userDto.email) && Objects.equals(trackVotes, userDto.trackVotes) && Objects.equals(lastLogin, userDto.lastLogin);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, username, password, trackVotes, lastLogin);
+        return Objects.hash(userId, username, password, email, trackVotes, lastLogin);
     }
 
 }

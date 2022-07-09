@@ -16,6 +16,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+import static co.topper.configuration.constants.UserConstants.FIELD_EMAIL;
 import static co.topper.configuration.constants.UserConstants.FIELD_LAST_LOGIN;
 import static co.topper.configuration.constants.UserConstants.FIELD_PASSWORD;
 import static co.topper.configuration.constants.UserConstants.FIELD_TRACK_VOTES;
@@ -37,6 +38,9 @@ public class UserEntity {
     @Field(FIELD_PASSWORD)
     private final String password;
 
+    @Field(FIELD_EMAIL)
+    private final String email;
+
     @Field(FIELD_TRACK_VOTES)
     private final Map<String, BigInteger> trackVotes;
 
@@ -46,32 +50,35 @@ public class UserEntity {
     public UserEntity(String id,
                       String username,
                       String password,
+                      String email,
                       Map<String, BigInteger> trackVotes,
                       Instant lastLogin) {
         this.id = id;
         this.username = username;
         this.password = password;
+        this.email = email;
         this.trackVotes = trackVotes;
         this.lastLogin = lastLogin;
     }
 
     @Override
     public String toString() {
-        return "User{" +
+        return "UserEntity{" +
                 "id='" + id + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
-                ", trackVotes=" + trackVotes + '\'' +
-                ", lastLogin=" + lastLogin + '\'' +
+                ", email='" + email + '\'' +
+                ", trackVotes=" + trackVotes +
+                ", lastLogin=" + lastLogin +
                 '}';
     }
 
-    public static UserEntity create(String username, String password) {
+    public static UserEntity create(String username, String password, String email) {
         final String id = UUID.randomUUID().toString();
         final Map<String, BigInteger> votesMap = new HashMap<>();
         final Instant firstLogin = Instant.now().truncatedTo(ChronoUnit.SECONDS);
 
-        return new UserEntity(id, username, password, votesMap, firstLogin);
+        return new UserEntity(id, username, password, email, votesMap, firstLogin);
     }
 
     public String getId() {
@@ -84,6 +91,10 @@ public class UserEntity {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public Map<String, BigInteger> getTrackVotes() {
@@ -104,13 +115,15 @@ public class UserEntity {
         }
         UserEntity user = (UserEntity) o;
         return id.equals(user.id) && username.equals(user.username)
-                && password.equals(user.password) && trackVotes.equals(user.trackVotes)
-                && lastLogin.equals(user.lastLogin);
+                && password.equals(user.password) &&
+                email.equals(user.email) &&
+                trackVotes.equals(user.trackVotes) &&
+                lastLogin.equals(user.lastLogin);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, password, trackVotes, lastLogin);
+        return Objects.hash(id, username, password, email, trackVotes, lastLogin);
     }
 
     public static class UpdateBuilder {
@@ -135,6 +148,11 @@ public class UserEntity {
             return this;
         }
 
+        public UpdateBuilder setEmail(String email) {
+            set(FIELD_EMAIL, email);
+            return this;
+        }
+
         public UpdateBuilder setTrackVotes(Map<String, BigInteger> votes) {
             set(FIELD_TRACK_VOTES, votes);
             return this;
@@ -150,7 +168,7 @@ public class UserEntity {
         }
 
         public Optional<Update> build() {
-            if (!Optional.empty().equals(update)) {
+            if (!update.equals(new Update())) {
                 Optional.of(update);
             }
 

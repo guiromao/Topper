@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
 
         if (Objects.isNull(userDto.getUserId()) ||
                 !userRepository.existsById(userDto.getUserId())) {
-            user = UserEntity.create(userDto.getUsername(), userDto.getPassword());
+            user = UserEntity.create(userDto.getUsername(), userDto.getPassword(), userDto.getEmail());
         } else {
             user = userRepository.findById(userDto.getUserId())
                     .orElseThrow(() -> new ResourceNotFoundException(userDto.getUserId(), UserEntity.class));
