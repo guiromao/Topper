@@ -25,8 +25,10 @@ public class TrackConverter {
                 track.getName(),
                 Stream.of(track.getArtists())
                         .map(ArtistSimplified::getId)
+                        .collect(Collectors.toSet()),
+                Stream.of(track.getArtists())
+                        .map(ArtistSimplified::getName)
                         .collect(Collectors.toSet())
-
         );
     }
 

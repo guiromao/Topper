@@ -45,6 +45,12 @@
 			<artifactId>spotify-web-api-java</artifactId>
 			<version>7.0.0</version>
 		</dependency>
+
+		<dependency>
+			<groupId>io.lettuce</groupId>
+			<artifactId>lettuce-core</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>

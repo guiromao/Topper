@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
 
@@ -12,16 +13,20 @@ import java.util.Set;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY,
         getterVisibility = JsonAutoDetect.Visibility.NONE,
         isGetterVisibility = JsonAutoDetect.Visibility.NONE)
-public class TrackDto {
+public class TrackDto implements Serializable {
+
+    private static final long serialVersionUID = 7156526077883281623L;
 
     private final String id;
     private final String name;
     private final Set<String> artistIds;
+    private final Set<String> artistsNames;
 
-    public TrackDto(String id, String name, Set<String> artistIds) {
+    public TrackDto(String id, String name, Set<String> artistIds, Set<String> artistsNames) {
         this.id = id;
         this.name = name;
         this.artistIds = artistIds;
+        this.artistsNames = artistsNames;
     }
 
     @Override
@@ -29,7 +34,8 @@ public class TrackDto {
         return "TrackDto{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
-                ", artistIds='" + artistIds + '\'' +
+                ", artistIds=" + artistIds +
+                ", artistsNames=" + artistsNames +
                 '}';
     }
 
@@ -45,6 +51,10 @@ public class TrackDto {
         return artistIds;
     }
 
+    public Set<String> getArtistsNames() {
+        return artistsNames;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -54,12 +64,13 @@ public class TrackDto {
             return false;
         }
         TrackDto trackDto = (TrackDto) o;
-        return id.equals(trackDto.id) && name.equals(trackDto.name) && artistIds.equals(trackDto.artistIds);
+        return id.equals(trackDto.id) && name.equals(trackDto.name) &&
+                artistIds.equals(trackDto.artistIds) && artistsNames.equals(trackDto.artistsNames);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, artistIds);
+        return Objects.hash(id, name, artistIds, artistsNames);
     }
 
 }

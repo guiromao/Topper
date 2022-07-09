@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Objects;
+import java.util.Set;
 
 @Document(collection = ArtistEntity.ARTIST_COLLECTION)
 @TypeAlias(ArtistEntity.ARTIST_COLLECTION)
