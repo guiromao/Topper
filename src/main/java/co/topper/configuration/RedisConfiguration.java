@@ -28,8 +28,10 @@ public class RedisConfiguration {
 
     public static final String CACHE_ARTISTS_DB = "artistsCacheDb";
     public static final String CACHE_TRACKS_DB = "tracksCacheDb";
+    public static final String CACHE_ALBUMS_DB = "albumsCacheDb";
     public static final String CACHE_ARTIST_SERVICE = "tracksCacheService";
     public static final String CACHE_TRACKS_SERVICE = "tracksCacheService";
+    public static final String CACHE_ALBUMS_SERVICE = "albumsCacheService";
 
     @Bean
     public RedisCacheConfiguration cacheConfiguration() {
@@ -45,10 +47,14 @@ public class RedisConfiguration {
                 .withCacheConfiguration(CACHE_ARTISTS_DB,
                         RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(10)))
                 .withCacheConfiguration(CACHE_TRACKS_DB,
-                        RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(5)))
+                        RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(10)))
+                .withCacheConfiguration(CACHE_ALBUMS_DB,
+                        RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(10)))
                 .withCacheConfiguration(CACHE_ARTIST_SERVICE,
                         RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(60)))
                 .withCacheConfiguration(CACHE_TRACKS_SERVICE,
+                        RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(60)))
+                .withCacheConfiguration(CACHE_ALBUMS_SERVICE,
                         RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(60)));
     }
 

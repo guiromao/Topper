@@ -1,7 +1,7 @@
 package co.topper;
 
 import co.topper.domain.data.dto.TrackDto;
-import co.topper.domain.service.SearchService;
+import co.topper.domain.service.DiscoverService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -15,7 +15,7 @@ import java.util.Set;
 public class TopperApplication implements CommandLineRunner {
 
 	@Autowired
-	private SearchService searchService;
+	private DiscoverService searchService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(TopperApplication.class, args);

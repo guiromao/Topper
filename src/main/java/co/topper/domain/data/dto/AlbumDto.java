@@ -1,36 +1,19 @@
-package co.topper.domain.data.entity;
-
-import org.springframework.data.annotation.TypeAlias;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+package co.topper.domain.data.dto;
 
 import java.util.Objects;
 import java.util.Set;
 
-@Document(collection = AlbumEntity.ALBUM_COLLECTION)
-@TypeAlias(AlbumEntity.ALBUM_COLLECTION)
-public class AlbumEntity {
-
-    public static final String ALBUM_COLLECTION = "album";
-
-    private static final String FIELD_NAME = "name";
-    private static final String FIELD_ARTIST_IDS = "artistIds";
-    private static final String FIELD_RELEASE_DATE = "releaseDate";
+public class AlbumDto {
 
     private final String id;
-
-    @Field(FIELD_NAME)
     private final String name;
-
-    @Field(FIELD_ARTIST_IDS)
     private final Set<String> artistIds;
-
-    @Field(FIELD_RELEASE_DATE)
     private final String releaseDate;
 
-    public AlbumEntity(String id, String name,
-                       Set<String> artistIds,
-                       String releaseDate) {
+    public AlbumDto(String id,
+                    String name,
+                    Set<String> artistIds,
+                    String releaseDate) {
         this.id = id;
         this.name = name;
         this.artistIds = artistIds;
@@ -39,7 +22,7 @@ public class AlbumEntity {
 
     @Override
     public String toString() {
-        return "AlbumEntity{" +
+        return "AlbumDto{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", artistIds=" + artistIds +
@@ -71,10 +54,9 @@ public class AlbumEntity {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        AlbumEntity that = (AlbumEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) &&
-                Objects.equals(artistIds, that.artistIds) &&
-                Objects.equals(releaseDate, that.releaseDate);
+        AlbumDto albumDto = (AlbumDto) o;
+        return id.equals(albumDto.id) && name.equals(albumDto.name) && Objects.equals(artistIds, albumDto.artistIds) &&
+                Objects.equals(releaseDate, albumDto.releaseDate);
     }
 
     @Override
