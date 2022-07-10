@@ -10,7 +10,7 @@ import co.topper.domain.data.entity.AlbumEntity;
 import co.topper.domain.data.entity.ArtistEntity;
 import co.topper.domain.data.entity.TrackEntity;
 import co.topper.domain.exception.ConnectivityFailureException;
-import co.topper.domain.exception.EmptyTrackNameException;
+import co.topper.domain.exception.EmptySearchTextException;
 import org.apache.hc.core5.http.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -61,7 +61,7 @@ public class MusicSearchServiceImpl implements MusicSearchService {
     @Cacheable(value = CACHE_TRACKS_SERVICE)
     public Set<TrackDto> searchTracks(String value) {
         if ("".equals(value.trim())) {
-            throw new EmptyTrackNameException();
+            throw new EmptySearchTextException(TrackEntity.class);
         }
 
         SearchTracksRequest searchRequest = spotifyApi.searchTracks(value)
