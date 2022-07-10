@@ -5,7 +5,9 @@ import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.lang.Nullable;
 
+import java.util.Objects;
 import java.util.Set;
 
 @Document(collection = TrackEntity.TRACK_COLLECTION)
@@ -17,6 +19,7 @@ public class TrackEntity {
 
     private static final String FIELD_NAME = "name";
     private static final String FIELD_ARTIST_IDS = "artistIds";
+    private static final String FIELD_ALBUM_ID = "albumId";
     private static final String FIELD_VOTES = "votes";
 
     @Id
@@ -28,21 +31,26 @@ public class TrackEntity {
     @Field(FIELD_ARTIST_IDS)
     private final Set<String> artistIds;
 
+    @Field(FIELD_ALBUM_ID)
+    private final String albumId;
+
     @Field(FIELD_VOTES)
     private final Long votes;
 
     public TrackEntity(String id,
                        String name,
-                       Set<String> artistIds,
+                       @Nullable Set<String> artistIds,
+                       @Nullable String albumId,
                        Long votes) {
         this.id = id;
         this.name = name;
         this.artistIds = artistIds;
+        this.albumId = albumId;
         this.votes = votes;
     }
 
-    public static TrackEntity create(String id, String name, Set<String> artistIds) {
-        return new TrackEntity(id, name, artistIds, 0L);
+    public static TrackEntity create(String id, String name, Set<String> artistIds, String albumId) {
+        return new TrackEntity(id, name, artistIds, albumId, 0L);
     }
 
     @Override
@@ -51,6 +59,7 @@ public class TrackEntity {
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", artistIds=" + artistIds +
+                ", albumId='" + albumId + '\'' +
                 ", votes=" + votes +
                 '}';
     }
@@ -63,8 +72,14 @@ public class TrackEntity {
         return name;
     }
 
-    public Set<String> getArtistId() {
+    @Nullable
+    public Set<String> getArtistIds() {
         return artistIds;
+    }
+
+    @Nullable
+    public String getAlbumId() {
+        return albumId;
     }
 
     public Long getVotes() {
@@ -79,10 +94,14 @@ public class TrackEntity {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        TrackEntity track = (TrackEntity) o;
-        return id.equals(track.id) && name.equals(track.name)
-                && artistIds.equals(track.artistIds)
-                && votes.equals(track.votes);
+        TrackEntity that = (TrackEntity) o;
+        return id.equals(that.id) && name.equals(that.name) && Objects.equals(artistIds, that.artistIds) &&
+                Objects.equals(albumId, that.albumId) && votes.equals(that.votes);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, artistIds, albumId, votes);
     }
 
 }

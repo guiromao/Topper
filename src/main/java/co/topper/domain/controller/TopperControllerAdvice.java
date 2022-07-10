@@ -2,6 +2,7 @@ package co.topper.domain.controller;
 
 import co.topper.domain.exception.ConnectivityFailureException;
 import co.topper.domain.exception.EmptySearchTextException;
+import co.topper.domain.exception.InvalidArgumentsException;
 import co.topper.domain.exception.TailoredResponse;
 import co.topper.domain.exception.ResourceNotFoundException;
 import co.topper.domain.exception.UserAlreadyExistingException;
@@ -29,7 +30,8 @@ public class TopperControllerAdvice {
         return new ResponseEntity<>(response, HttpStatus.REQUEST_TIMEOUT);
     }
 
-    @ExceptionHandler({UserAlreadyExistingException.class, EmptySearchTextException.class})
+    @ExceptionHandler({UserAlreadyExistingException.class, EmptySearchTextException.class,
+            InvalidArgumentsException.class})
     public ResponseEntity<Object> handleBadRequest(Exception ex) {
         TailoredResponse response = TailoredResponse.of(HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(), ex.getMessage());

@@ -50,7 +50,10 @@ public class DataManagerImpl implements DataManager {
                             trackDto.getArtists().stream()
                                     .map(ArtistDto::getArtistId)
                                     .collect(Collectors.toSet())
-                            : Collections.emptySet()
+                            : Collections.emptySet(),
+                    Objects.nonNull(trackDto.getAlbum()) ?
+                            trackDto.getAlbum().getId()
+                            : null
             );
 
             trackRepository.save(track);
