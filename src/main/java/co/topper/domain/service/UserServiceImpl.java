@@ -6,8 +6,10 @@ import co.topper.domain.data.entity.UserEntity;
 import co.topper.domain.data.entity.UserEntity.UpdateBuilder;
 import co.topper.domain.data.repository.UserRepository;
 import co.topper.domain.exception.ResourceNotFoundException;
+import co.topper.domain.exception.UserAlreadyExistingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -18,17 +20,21 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserConverter userConverter;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository,
-                           UserConverter userConverter) {
+                           UserConverter userConverter,
+                           BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userConverter = userConverter;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public UserDto saveUser(UserDto userDto) {
-        UserEntity user = fetchUser(userDto);
+        String encodedPassword = passwordEncoder.encode(userDto.getPassword());
+        UserEntity user = fetchUser(userDto).withPassword(encodedPassword);
 
         return userConverter.toDto(userRepository.save(user));
     }
@@ -36,8 +42,8 @@ public class UserServiceImpl implements UserService {
     private UserEntity fetchUser(UserDto userDto) {
         UserEntity user;
 
-        if (Objects.isNull(userDto.getUserId()) ||
-                !userRepository.existsById(userDto.getUserId())) {
+        if (Objects.isNull(userDto.getUserId())) {
+            validate(userDto);
             user = UserEntity.create(userDto.getUsername(), userDto.getPassword(), userDto.getEmail());
         } else {
             user = userRepository.findById(userDto.getUserId())
@@ -56,6 +62,12 @@ public class UserServiceImpl implements UserService {
 
         return updateBuilder.build()
                 .orElseThrow(() -> new RuntimeException("Error creating UserEntity Update"));
+    }
+
+    private void validate(UserDto dto) {
+        if (userRepository.existsByEmail(dto.getEmail())) {
+            throw new UserAlreadyExistingException("Email", dto.getEmail());
+        }
     }
 
 }

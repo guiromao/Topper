@@ -60,6 +60,11 @@ public class UserEntity {
         this.lastLogin = lastLogin;
     }
 
+    public UserEntity withPassword(String updatedPassword) {
+        return new UserEntity(this.id, this.username, updatedPassword,
+                this.email, this.trackVotes, this.lastLogin);
+    }
+
     @Override
     public String toString() {
         return "UserEntity{" +

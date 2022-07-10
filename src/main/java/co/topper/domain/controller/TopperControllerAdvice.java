@@ -3,6 +3,7 @@ package co.topper.domain.controller;
 import co.topper.domain.exception.ConnectivityFailureException;
 import co.topper.domain.exception.TailoredResponse;
 import co.topper.domain.exception.ResourceNotFoundException;
+import co.topper.domain.exception.UserAlreadyExistingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -25,6 +26,14 @@ public class TopperControllerAdvice {
                 HttpStatus.REQUEST_TIMEOUT.getReasonPhrase(), ex.getMessage());
 
         return new ResponseEntity<>(response, HttpStatus.REQUEST_TIMEOUT);
+    }
+
+    @ExceptionHandler({UserAlreadyExistingException.class})
+    public ResponseEntity<Object> handleBadRequest(Exception ex) {
+        TailoredResponse response = TailoredResponse.of(HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(), ex.getMessage());
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
 }
