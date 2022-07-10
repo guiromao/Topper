@@ -48,7 +48,7 @@ public class ArtistConverter {
 
     private Set<ArtistEntity> filterArtists(TrackEntity track, Set<ArtistEntity> artists) {
         return artists.stream()
-                .filter(artist -> track.getArtistId().contains(artist.getId()))
+                .filter(artist -> track.getArtistIds().contains(artist.getId()))
                 .collect(Collectors.toSet());
     }
 }
