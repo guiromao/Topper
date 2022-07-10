@@ -8,6 +8,8 @@ import se.michaelthelin.spotify.model_objects.specification.Artist;
 import se.michaelthelin.spotify.model_objects.specification.ArtistSimplified;
 import se.michaelthelin.spotify.model_objects.specification.Paging;
 
+import java.util.Collections;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -47,6 +49,10 @@ public class ArtistConverter {
     }
 
     private Set<ArtistEntity> filterArtists(TrackEntity track, Set<ArtistEntity> artists) {
+        if (Objects.isNull(track.getArtistIds())) {
+            return Collections.emptySet();
+        }
+
         return artists.stream()
                 .filter(artist -> track.getArtistIds().contains(artist.getId()))
                 .collect(Collectors.toSet());
