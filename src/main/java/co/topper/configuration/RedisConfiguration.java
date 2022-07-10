@@ -33,10 +33,13 @@ public class RedisConfiguration {
     public static final String CACHE_TRACKS_SERVICE = "tracksCacheService";
     public static final String CACHE_ALBUMS_SERVICE = "albumsCacheService";
 
+    private static final Integer CACHE_SERVICE_IN_MINUTES = 120;
+    private static final Integer CACHE_DB_IN_MINUTES = 10;
+
     @Bean
     public RedisCacheConfiguration cacheConfiguration() {
         return RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(60))
+                .entryTtl(Duration.ofMinutes(CACHE_SERVICE_IN_MINUTES))
                 .disableCachingNullValues()
                 .serializeValuesWith(SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
     }
@@ -45,17 +48,17 @@ public class RedisConfiguration {
     public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
         return (builder) -> builder
                 .withCacheConfiguration(CACHE_ARTISTS_DB,
-                        RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(10)))
+                        RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(CACHE_DB_IN_MINUTES)))
                 .withCacheConfiguration(CACHE_TRACKS_DB,
-                        RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(10)))
+                        RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(CACHE_DB_IN_MINUTES)))
                 .withCacheConfiguration(CACHE_ALBUMS_DB,
-                        RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(10)))
+                        RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(CACHE_DB_IN_MINUTES)))
                 .withCacheConfiguration(CACHE_ARTIST_SERVICE,
-                        RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(60)))
+                        RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(CACHE_SERVICE_IN_MINUTES)))
                 .withCacheConfiguration(CACHE_TRACKS_SERVICE,
-                        RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(60)))
+                        RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(CACHE_SERVICE_IN_MINUTES)))
                 .withCacheConfiguration(CACHE_ALBUMS_SERVICE,
-                        RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(60)));
+                        RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(CACHE_SERVICE_IN_MINUTES)));
     }
 
 }

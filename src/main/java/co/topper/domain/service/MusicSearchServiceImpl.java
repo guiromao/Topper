@@ -36,9 +36,9 @@ import static co.topper.configuration.RedisConfiguration.CACHE_ARTIST_SERVICE;
 import static co.topper.configuration.RedisConfiguration.CACHE_TRACKS_SERVICE;
 
 @Service
-public class MusicDiscoveryServiceImpl implements MusicDiscoveryService {
+public class MusicSearchServiceImpl implements MusicSearchService {
 
-    private static final Integer NUMBER_RESULTS = 20;
+    private static final Integer NUMBER_RESULTS = 5;
 
     private final SpotifyApi spotifyApi;
     private final TrackConverter trackConverter;
@@ -46,10 +46,10 @@ public class MusicDiscoveryServiceImpl implements MusicDiscoveryService {
     private final AlbumConverter albumConverter;
 
     @Autowired
-    public MusicDiscoveryServiceImpl(SpotifyApi spotifyApi,
-                                     TrackConverter trackConverter,
-                                     ArtistConverter artistConverter,
-                                     AlbumConverter albumConverter) {
+    public MusicSearchServiceImpl(SpotifyApi spotifyApi,
+                                  TrackConverter trackConverter,
+                                  ArtistConverter artistConverter,
+                                  AlbumConverter albumConverter) {
         this.spotifyApi = spotifyApi;
         this.trackConverter = trackConverter;
         this.artistConverter = artistConverter;

@@ -1,8 +1,11 @@
 package co.topper.domain.data.dto;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import org.springframework.lang.Nullable;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -17,16 +20,25 @@ public class TrackDto implements Serializable {
 
     private static final long serialVersionUID = 7156526077883281623L;
 
+    private static final String PROPERTY_ID = "id";
+    private static final String PROPERTY_NAME = "name";
+    private static final String PROPERTY_ARTISTS = "artists";
+    private static final String PROPERTY_ALBUM = "album";
+
     private final String id;
     private final String name;
-    private final Set<String> artistIds;
-    private final Set<String> artistsNames;
+    private final Set<ArtistDto> artists;
+    private final AlbumDto album;
 
-    public TrackDto(String id, String name, Set<String> artistIds, Set<String> artistsNames) {
+    @JsonCreator
+    public TrackDto(@JsonProperty(PROPERTY_ID) String id,
+                    @JsonProperty(PROPERTY_NAME) String name,
+                    @Nullable @JsonProperty(PROPERTY_ARTISTS) Set<ArtistDto> artists,
+                    @Nullable @JsonProperty(PROPERTY_ALBUM) AlbumDto album) {
         this.id = id;
         this.name = name;
-        this.artistIds = artistIds;
-        this.artistsNames = artistsNames;
+        this.artists = artists;
+        this.album = album;
     }
 
     @Override
@@ -34,25 +46,31 @@ public class TrackDto implements Serializable {
         return "TrackDto{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
-                ", artistIds=" + artistIds +
-                ", artistsNames=" + artistsNames +
+                ", artists=" + artists +
+                ", album=" + album +
                 '}';
     }
 
+    @JsonProperty(PROPERTY_ID)
     public String getId() {
         return id;
     }
 
+    @JsonProperty(PROPERTY_NAME)
     public String getName() {
         return name;
     }
 
-    public Set<String> getArtistIds() {
-        return artistIds;
+    @Nullable
+    @JsonProperty(PROPERTY_ARTISTS)
+    public Set<ArtistDto> getArtists() {
+        return artists;
     }
 
-    public Set<String> getArtistsNames() {
-        return artistsNames;
+    @Nullable
+    @JsonProperty(PROPERTY_ALBUM)
+    public AlbumDto getAlbum() {
+        return album;
     }
 
     @Override
@@ -65,12 +83,13 @@ public class TrackDto implements Serializable {
         }
         TrackDto trackDto = (TrackDto) o;
         return id.equals(trackDto.id) && name.equals(trackDto.name) &&
-                artistIds.equals(trackDto.artistIds) && artistsNames.equals(trackDto.artistsNames);
+                Objects.equals(artists, trackDto.artists) &&
+                Objects.equals(album, trackDto.album);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, artistIds, artistsNames);
+        return Objects.hash(id, name, artists, album);
     }
 
 }

@@ -6,7 +6,6 @@ import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.math.BigInteger;
 import java.util.Set;
 
 @Document(collection = TrackEntity.TRACK_COLLECTION)
@@ -30,12 +29,12 @@ public class TrackEntity {
     private final Set<String> artistIds;
 
     @Field(FIELD_VOTES)
-    private final BigInteger votes;
+    private final Long votes;
 
     public TrackEntity(String id,
                        String name,
                        Set<String> artistIds,
-                       BigInteger votes) {
+                       Long votes) {
         this.id = id;
         this.name = name;
         this.artistIds = artistIds;
@@ -43,12 +42,11 @@ public class TrackEntity {
     }
 
     public static TrackEntity create(String id, String name, Set<String> artistIds) {
-        BigInteger votes = BigInteger.ZERO;
-
-        return new TrackEntity(id, name, artistIds, votes);
+        return new TrackEntity(id, name, artistIds, 0L);
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "TrackEntity{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
@@ -69,7 +67,7 @@ public class TrackEntity {
         return artistIds;
     }
 
-    public BigInteger getVotes() {
+    public Long getVotes() {
         return votes;
     }
 

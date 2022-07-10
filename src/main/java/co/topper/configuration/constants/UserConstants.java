@@ -1,6 +1,6 @@
 package co.topper.configuration.constants;
 
-public class UserConstants {
+public final class UserConstants {
 
     public static final String FIELD_USERNAME = "username";
     public static final String FIELD_PASSWORD = "password";

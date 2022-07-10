@@ -7,4 +7,6 @@ public interface UserRepositoryCustom {
 
     UserEntity updateUser(String userId, Update update);
 
+    UserEntity updateVotes(String userId, String trackId, Long votes);
+
 }

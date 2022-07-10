@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.springframework.lang.Nullable;
 
-import java.math.BigInteger;
 import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
@@ -30,7 +29,7 @@ public class UserDto {
     private final String username;
     private final String password;
     private final String email;
-    private final Map<String, BigInteger> trackVotes;
+    private final Map<String, Long> trackVotes;
     private final Instant lastLogin;
 
     @JsonCreator
@@ -38,7 +37,7 @@ public class UserDto {
                    @JsonProperty(PROPERTY_USERNAME) String username,
                    @JsonProperty(PROPERTY_PASSWORD) String password,
                    @JsonProperty(PROPERTY_EMAIL) String email,
-                   @Nullable @JsonProperty(PROPERTY_TRACK_VOTES) Map<String, BigInteger> trackVotes,
+                   @Nullable @JsonProperty(PROPERTY_TRACK_VOTES) Map<String, Long> trackVotes,
                    @Nullable @JsonProperty(PROPERTY_LAST_LOGIN) Instant lastLogin) {
         this.userId = userId;
         this.username = username;
@@ -81,7 +80,7 @@ public class UserDto {
     }
 
     @JsonProperty(PROPERTY_TRACK_VOTES)
-    public Map<String, BigInteger> getTrackVotes() {
+    public Map<String, Long> getTrackVotes() {
         return trackVotes;
     }
 

@@ -9,7 +9,7 @@ import java.util.Set;
 /**
  * Service that will use a 3rd party tool to collect music data
  */
-public interface MusicDiscoveryService {
+public interface MusicSearchService {
 
     Set<TrackDto> searchTracks(String value);
 

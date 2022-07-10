@@ -7,7 +7,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.query.Update;
 
-import java.math.BigInteger;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
@@ -42,7 +41,7 @@ public class UserEntity {
     private final String email;
 
     @Field(FIELD_TRACK_VOTES)
-    private final Map<String, BigInteger> trackVotes;
+    private final Map<String, Long> trackVotes;
 
     @Field(FIELD_LAST_LOGIN)
     private final Instant lastLogin;
@@ -51,7 +50,7 @@ public class UserEntity {
                       String username,
                       String password,
                       String email,
-                      Map<String, BigInteger> trackVotes,
+                      Map<String, Long> trackVotes,
                       Instant lastLogin) {
         this.id = id;
         this.username = username;
@@ -75,7 +74,7 @@ public class UserEntity {
 
     public static UserEntity create(String username, String password, String email) {
         final String id = UUID.randomUUID().toString();
-        final Map<String, BigInteger> votesMap = new HashMap<>();
+        final Map<String, Long> votesMap = new HashMap<>();
         final Instant firstLogin = Instant.now().truncatedTo(ChronoUnit.SECONDS);
 
         return new UserEntity(id, username, password, email, votesMap, firstLogin);
@@ -97,7 +96,7 @@ public class UserEntity {
         return email;
     }
 
-    public Map<String, BigInteger> getTrackVotes() {
+    public Map<String, Long> getTrackVotes() {
         return trackVotes;
     }
 
@@ -153,7 +152,7 @@ public class UserEntity {
             return this;
         }
 
-        public UpdateBuilder setTrackVotes(Map<String, BigInteger> votes) {
+        public UpdateBuilder setTrackVotes(Map<String, Long> votes) {
             set(FIELD_TRACK_VOTES, votes);
             return this;
         }
