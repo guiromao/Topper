@@ -1,16 +1,19 @@
 {
-  "id": "3cn4e9MRXiUmDqTioimYBp",
+  "trackId": "3cn4e9MRXiUmDqTioimYBp",
   "name": "Civilization",
-  "artists": {
-    "artistId": "1gR0gsQYfi6joyO1dlp76N",
-    "name": "Justice"
-  },
+  "artists": [
+    {
+      "artistId": "1gR0gsQYfi6joyO1dlp76N",
+      "name": "Justice"
+    }
+  ],
   "album": {
     "id": "0Vt3GOtAqaBlyyaFVoSXhz",
     "name": "Civilization",
     "artistIds": [
       "1gR0gsQYfi6joyO1dlp76N"
-    ]
+    ],
+    "releaseDate": "2011-06-06"
   },
-  "releaseDate": "2011-06-06"
+  "votes": 100
 }

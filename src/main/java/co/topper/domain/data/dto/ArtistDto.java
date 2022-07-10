@@ -1,16 +1,31 @@
 package co.topper.domain.data.dto;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import java.io.Serializable;
 import java.util.Objects;
 
+@JsonPropertyOrder(alphabetic = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY,
+        getterVisibility = JsonAutoDetect.Visibility.NONE,
+        isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public class ArtistDto implements Serializable {
 
     private static final long serialVersionUID = 47567657L;
+    private static final String PROPERTY_ARTIST_ID = "artistId";
+    private static final String PROPERTY_ARTIST_NAME = "name";
 
     private final String artistId;
     private final String name;
 
-    public ArtistDto(String artistId, String name) {
+    @JsonCreator
+    public ArtistDto(@JsonProperty(PROPERTY_ARTIST_ID) String artistId,
+                     @JsonProperty(PROPERTY_ARTIST_NAME) String name) {
         this.artistId = artistId;
         this.name = name;
     }

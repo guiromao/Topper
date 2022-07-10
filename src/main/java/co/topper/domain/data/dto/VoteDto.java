@@ -13,7 +13,7 @@ public class VoteDto extends TrackDto {
     private final Long votes;
 
     @JsonCreator
-    public VoteDto(@JsonProperty("id") String trackId,
+    public VoteDto(@JsonProperty("trackId") String trackId,
                    @JsonProperty("name") String name,
                    @JsonProperty("artists") Set<ArtistDto> artists,
                    @JsonProperty("album") AlbumDto album,

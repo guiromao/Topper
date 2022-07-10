@@ -50,6 +50,11 @@ public class TailoredResponse {
         return code;
     }
 
+    @JsonProperty(PROPERTY_REASON)
+    public String getReason() {
+        return reason;
+    }
+
     @JsonProperty(PROPERTY_MESSAGE)
     public String getMessage() {
         return message;

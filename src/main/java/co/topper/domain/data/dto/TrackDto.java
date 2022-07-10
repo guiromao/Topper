@@ -20,7 +20,7 @@ public class TrackDto implements Serializable {
 
     private static final long serialVersionUID = 7156526077883281623L;
 
-    private static final String PROPERTY_ID = "id";
+    private static final String PROPERTY_ID = "trackId";
     private static final String PROPERTY_NAME = "name";
     private static final String PROPERTY_ARTISTS = "artists";
     private static final String PROPERTY_ALBUM = "album";

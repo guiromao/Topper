@@ -14,13 +14,16 @@ import java.util.Objects;
         isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public class SuccessVoteDto {
 
+    private static final String PROPERTY_TRACK_ID = "trackId";
     private static final String PROPERTY_TRACK_NAME = "trackName";
     private static final String PROPERTY_TRACK_VOTES = "trackVotes";
 
+    private final String trackId;
     private final String trackName;
     private final Long trackVotes;
 
-    public SuccessVoteDto(String trackName, Long trackVotes) {
+    public SuccessVoteDto(String trackId, String trackName, Long trackVotes) {
+        this.trackId = trackId;
         this.trackName = trackName;
         this.trackVotes = trackVotes;
     }
@@ -28,9 +31,15 @@ public class SuccessVoteDto {
     @Override
     public String toString() {
         return "SuccessVoteDto{" +
-                "trackName='" + trackName + '\'' +
+                "trackId='" + trackId + '\'' +
+                ", trackName='" + trackName + '\'' +
                 ", trackVotes=" + trackVotes +
                 '}';
+    }
+
+    @JsonProperty(PROPERTY_TRACK_ID)
+    public String getTrackId() {
+        return trackId;
     }
 
     @JsonProperty(PROPERTY_TRACK_NAME)
@@ -52,11 +61,11 @@ public class SuccessVoteDto {
             return false;
         }
         SuccessVoteDto that = (SuccessVoteDto) o;
-        return trackName.equals(that.trackName) && trackVotes.equals(that.trackVotes);
+        return trackId.equals(that.trackId) && trackName.equals(that.trackName) && trackVotes.equals(that.trackVotes);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(trackName, trackVotes);
+        return Objects.hash(trackId, trackName, trackVotes);
     }
 }

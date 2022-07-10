@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
     public UserDto saveUser(UserDto userDto) {
         UserEntity user = fetchUser(userDto);
 
-        return userConverter.toDto(userRepository.updateUser(user.getId(), updateOf(user)));
+        return userConverter.toDto(userRepository.save(user));
     }
 
     private UserEntity fetchUser(UserDto userDto) {
@@ -51,7 +51,8 @@ public class UserServiceImpl implements UserService {
         final UpdateBuilder updateBuilder = UpdateBuilder.create()
                 .setUsername(user.getUsername())
                 .setPassword(user.getPassword())
-                .setLastLogin(Instant.now());
+                .setLastLogin(Instant.now())
+                .setTrackVotes(user.getTrackVotes());
 
         return updateBuilder.build()
                 .orElseThrow(() -> new RuntimeException("Error creating UserEntity Update"));
