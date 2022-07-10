@@ -55,10 +55,10 @@ public class TrackConverter {
                 .map(track -> new TrackDto(
                         track.getId(),
                         track.getName(),
-                        Objects.nonNull(artists) ?
+                        Objects.nonNull(track.getArtistIds()) ?
                                 artistConverter.toDtoSet(track, artists)
                                 : null,
-                        Objects.nonNull(albums) ?
+                        Objects.nonNull(track.getAlbumId()) ?
                                 albumConverter.toDto(track, albums)
                                 : null
                 ))
