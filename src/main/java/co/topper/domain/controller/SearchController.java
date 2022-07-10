@@ -1,11 +1,10 @@
 package co.topper.domain.controller;
 
-import co.topper.domain.data.dto.SearchDto;
 import co.topper.domain.data.dto.TrackDto;
 import co.topper.domain.service.MusicSearchService;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Set;
@@ -23,8 +22,8 @@ public class SearchController {
     }
 
     @GetMapping
-    public Set<TrackDto> search(@RequestBody SearchDto searchDto) {
-        return searchService.searchTracks(searchDto.getTrackName());
+    public Set<TrackDto> search(@RequestParam String text) {
+        return searchService.searchTracks(text);
     }
 
 }
