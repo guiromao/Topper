@@ -60,9 +60,7 @@ public class MusicSearchServiceImpl implements MusicSearchService {
     @Override
     @Cacheable(value = CACHE_TRACKS_SERVICE)
     public Set<TrackDto> searchTracks(String value) {
-        if ("".equals(value.trim())) {
-            throw new EmptySearchTextException(TrackEntity.class);
-        }
+        assertValidText(value, TrackEntity.class);
 
         SearchTracksRequest searchRequest = spotifyApi.searchTracks(value)
                 .limit(NUMBER_RESULTS)
@@ -150,6 +148,12 @@ public class MusicSearchServiceImpl implements MusicSearchService {
 
         } catch (IOException | SpotifyWebApiException | ParseException e) {
             throw new ConnectivityFailureException(AlbumEntity.class);
+        }
+    }
+
+    private void assertValidText(String text, Class clazz) {
+        if ("".equals(text.trim())) {
+            throw new EmptySearchTextException(clazz);
         }
     }
 

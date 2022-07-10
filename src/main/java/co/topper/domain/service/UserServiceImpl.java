@@ -53,6 +53,16 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    @Override
+    public UserDto updateLastLogin(String userId) {
+        Update loginUpdate = UpdateBuilder.create()
+                .setLastLogin(Instant.now())
+                .build()
+                .orElseThrow(() -> new RuntimeException("Error creating last login update"));
+
+        return userConverter.toDto(userRepository.updateUser(userId, loginUpdate));
+    }
+
     private Update updateOf(UserEntity user) {
         final UpdateBuilder updateBuilder = UpdateBuilder.create()
                 .setUsername(user.getUsername())
