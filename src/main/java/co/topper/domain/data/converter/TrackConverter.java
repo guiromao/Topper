@@ -1,13 +1,13 @@
 package co.topper.domain.data.converter;
 
 import co.topper.domain.data.dto.ArtistDto;
+import co.topper.domain.data.dto.TopDto;
 import co.topper.domain.data.dto.TrackDto;
 import co.topper.domain.data.entity.AlbumEntity;
 import co.topper.domain.data.entity.ArtistEntity;
 import co.topper.domain.data.entity.TrackEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import se.michaelthelin.spotify.model_objects.specification.ArtistSimplified;
 import se.michaelthelin.spotify.model_objects.specification.Paging;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 
@@ -47,12 +47,12 @@ public class TrackConverter {
         );
     }
 
-    public List<TrackDto> toDtoList(List<TrackEntity> tracks,
-                                    Set<AlbumEntity> albums,
-                                    Set<ArtistEntity> artists) {
+    public List<TopDto> toDtoList(List<TrackEntity> tracks,
+                                  List<AlbumEntity> albums,
+                                  List<ArtistEntity> artists) {
 
         return tracks.stream()
-                .map(track -> new TrackDto(
+                .map(track -> new TopDto(
                         track.getId(),
                         track.getName(),
                         Objects.nonNull(track.getArtistIds()) ?
@@ -60,7 +60,8 @@ public class TrackConverter {
                                 : null,
                         Objects.nonNull(track.getAlbumId()) ?
                                 albumConverter.toDto(track, albums)
-                                : null
+                                : null,
+                        track.getVotes()
                 ))
                 .toList();
 

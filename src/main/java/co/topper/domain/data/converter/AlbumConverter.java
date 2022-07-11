@@ -9,6 +9,7 @@ import se.michaelthelin.spotify.model_objects.specification.AlbumSimplified;
 import se.michaelthelin.spotify.model_objects.specification.ArtistSimplified;
 import se.michaelthelin.spotify.model_objects.specification.Paging;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -45,7 +46,7 @@ public class AlbumConverter {
         );
     }
 
-    public AlbumDto toDto(TrackEntity track, Set<AlbumEntity> albums) {
+    public AlbumDto toDto(TrackEntity track, List<AlbumEntity> albums) {
         AlbumEntity albumEntity = extractAlbum(track, albums);
 
         if (Objects.isNull(albumEntity)) {
@@ -60,7 +61,7 @@ public class AlbumConverter {
         );
     }
 
-    private AlbumEntity extractAlbum(TrackEntity track, Set<AlbumEntity> albums) {
+    private AlbumEntity extractAlbum(TrackEntity track, List<AlbumEntity> albums) {
         return albums.stream()
                 .filter(album -> album.getId().equals(track.getAlbumId()))
                 .findFirst()

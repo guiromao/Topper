@@ -1,7 +1,7 @@
 package co.topper.domain.service;
 
 import co.topper.domain.data.converter.TrackConverter;
-import co.topper.domain.data.dto.TrackDto;
+import co.topper.domain.data.dto.TopDto;
 import co.topper.domain.data.entity.AlbumEntity;
 import co.topper.domain.data.entity.ArtistEntity;
 import co.topper.domain.data.entity.TrackEntity;
@@ -40,7 +40,7 @@ public class TopServiceImpl implements TopService {
     }
 
     @Override
-    public List<TrackDto> getTop(Integer limit, Integer offset) {
+    public List<TopDto> getTop(Integer limit, Integer offset) {
         if (limit < 1 || offset < 0) {
             throw new InvalidArgumentsException(limit, offset);
         }
@@ -48,18 +48,18 @@ public class TopServiceImpl implements TopService {
         Pageable pageable = PageRequest.of(offset, limit);
 
         List<TrackEntity> tracks = trackRepository.getTop(pageable);
-        Set<AlbumEntity> albums = fetchAlbums(extractAlbumIds(tracks));
-        Set<ArtistEntity> artists = fetchArtists(extractArtistIds(tracks));
+        List<AlbumEntity> albums = fetchAlbums(extractAlbumIds(tracks));
+        List<ArtistEntity> artists = fetchArtists(extractArtistIds(tracks));
 
         return trackConverter.toDtoList(tracks, albums, artists);
     }
 
-    private Set<AlbumEntity> fetchAlbums(Set<String> albumIds) {
-        return (Set<AlbumEntity>) albumRepository.findAllById(albumIds);
+    private List<AlbumEntity> fetchAlbums(Set<String> albumIds) {
+        return (List<AlbumEntity>) albumRepository.findAllById(albumIds);
     }
 
-    private Set<ArtistEntity> fetchArtists(Set<String> artistIds) {
-        return (Set<ArtistEntity>) artistRepository.findAllById(artistIds);
+    private List<ArtistEntity> fetchArtists(Set<String> artistIds) {
+        return (List<ArtistEntity>) artistRepository.findAllById(artistIds);
     }
 
     private Set<String> extractAlbumIds(List<TrackEntity> tracks) {
