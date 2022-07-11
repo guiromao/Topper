@@ -8,6 +8,7 @@ import co.topper.domain.data.repository.TrackRepository;
 import co.topper.domain.data.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,6 +20,7 @@ public class VoteServiceImpl implements VoteService {
     private final UserRepository userRepository;
     private final DataManager dataManager;
 
+    @Autowired
     public VoteServiceImpl(TrackRepository trackRepository,
                            UserRepository userRepository,
                            DataManager dataManager) {
