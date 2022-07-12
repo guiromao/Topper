@@ -6,6 +6,8 @@ public interface UserService {
 
     UserDto saveUser(UserDto userDto);
 
+    UserDto getUser(String userId);
+
     UserDto updateLastLogin(String userId);
 
 }

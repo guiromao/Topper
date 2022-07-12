@@ -39,6 +39,16 @@ public class UserServiceImpl implements UserService {
         return userConverter.toDto(userRepository.save(user));
     }
 
+    @Override
+    public UserDto getUser(String userId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException(userId, UserEntity.class));
+
+        user = user.withPassword(null);
+
+        return userConverter.toDto(user);
+    }
+
     private UserEntity fetchUser(UserDto userDto) {
         UserEntity user;
 
