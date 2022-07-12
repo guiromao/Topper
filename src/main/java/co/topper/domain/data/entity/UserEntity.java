@@ -10,12 +10,15 @@ import org.springframework.data.mongodb.core.query.Update;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import static co.topper.configuration.constants.UserConstants.FIELD_EMAIL;
+import static co.topper.configuration.constants.UserConstants.FIELD_FRIENDS_LIST_IDS;
 import static co.topper.configuration.constants.UserConstants.FIELD_LAST_LOGIN;
 import static co.topper.configuration.constants.UserConstants.FIELD_PASSWORD;
 import static co.topper.configuration.constants.UserConstants.FIELD_TRACK_VOTES;
@@ -40,6 +43,9 @@ public class UserEntity {
     @Field(FIELD_EMAIL)
     private final String email;
 
+    @Field(FIELD_FRIENDS_LIST_IDS)
+    private final Set<String> friendsListIds;
+
     @Field(FIELD_TRACK_VOTES)
     private final Map<String, Long> trackVotes;
 
@@ -50,28 +56,30 @@ public class UserEntity {
                       String username,
                       String password,
                       String email,
+                      Set<String> friendsListIds,
                       Map<String, Long> trackVotes,
                       Instant lastLogin) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
+        this.friendsListIds = friendsListIds;
         this.trackVotes = trackVotes;
         this.lastLogin = lastLogin;
     }
 
     public UserEntity withPassword(String updatedPassword) {
         return new UserEntity(this.id, this.username, updatedPassword,
-                this.email, this.trackVotes, this.lastLogin);
+                this.email, this.friendsListIds, this.trackVotes, this.lastLogin);
     }
 
-    @Override
-    public String toString() {
+    @Override public String toString() {
         return "UserEntity{" +
                 "id='" + id + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
+                ", friendsListIds=" + friendsListIds +
                 ", trackVotes=" + trackVotes +
                 ", lastLogin=" + lastLogin +
                 '}';
@@ -79,10 +87,11 @@ public class UserEntity {
 
     public static UserEntity create(String username, String password, String email) {
         final String id = UUID.randomUUID().toString();
+        final Set<String> friendsListIds = new HashSet<>();
         final Map<String, Long> votesMap = new HashMap<>();
         final Instant firstLogin = Instant.now().truncatedTo(ChronoUnit.SECONDS);
 
-        return new UserEntity(id, username, password, email, votesMap, firstLogin);
+        return new UserEntity(id, username, password, email, friendsListIds, votesMap, firstLogin);
     }
 
     public String getId() {
@@ -99,6 +108,10 @@ public class UserEntity {
 
     public String getEmail() {
         return email;
+    }
+
+    public Set<String> getFriendsListIds() {
+        return friendsListIds;
     }
 
     public Map<String, Long> getTrackVotes() {
@@ -121,13 +134,15 @@ public class UserEntity {
         return id.equals(user.id) && username.equals(user.username)
                 && password.equals(user.password) &&
                 email.equals(user.email) &&
+                friendsListIds.equals(user.friendsListIds) &&
                 trackVotes.equals(user.trackVotes) &&
                 lastLogin.equals(user.lastLogin);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, password, email, trackVotes, lastLogin);
+        return Objects.hash(id, username, password, email,
+                friendsListIds, trackVotes, lastLogin);
     }
 
     public static class UpdateBuilder {
@@ -164,6 +179,11 @@ public class UserEntity {
 
         public UpdateBuilder setLastLogin(Instant lastLogin) {
             set(FIELD_LAST_LOGIN, lastLogin);
+            return this;
+        }
+
+        public UpdateBuilder setFriendsListIds(Set<String> listIds) {
+            set(FIELD_FRIENDS_LIST_IDS, listIds);
             return this;
         }
 
