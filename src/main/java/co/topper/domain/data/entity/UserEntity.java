@@ -21,6 +21,7 @@ import static co.topper.configuration.constants.UserConstants.FIELD_EMAIL;
 import static co.topper.configuration.constants.UserConstants.FIELD_FRIENDS_LIST_IDS;
 import static co.topper.configuration.constants.UserConstants.FIELD_LAST_LOGIN;
 import static co.topper.configuration.constants.UserConstants.FIELD_PASSWORD;
+import static co.topper.configuration.constants.UserConstants.FIELD_REQUESTS_RECEIVED;
 import static co.topper.configuration.constants.UserConstants.FIELD_TRACK_VOTES;
 import static co.topper.configuration.constants.UserConstants.FIELD_USERNAME;
 
@@ -46,6 +47,9 @@ public class UserEntity {
     @Field(FIELD_FRIENDS_LIST_IDS)
     private final Set<String> friendsListIds;
 
+    @Field(FIELD_REQUESTS_RECEIVED)
+    private final Set<String> requestsReceivedIds;
+
     @Field(FIELD_TRACK_VOTES)
     private final Map<String, Long> trackVotes;
 
@@ -57,6 +61,7 @@ public class UserEntity {
                       String password,
                       String email,
                       Set<String> friendsListIds,
+                      Set<String> requestsReceivedIds,
                       Map<String, Long> trackVotes,
                       Instant lastLogin) {
         this.id = id;
@@ -64,13 +69,14 @@ public class UserEntity {
         this.password = password;
         this.email = email;
         this.friendsListIds = friendsListIds;
+        this.requestsReceivedIds = requestsReceivedIds;
         this.trackVotes = trackVotes;
         this.lastLogin = lastLogin;
     }
 
     public UserEntity withPassword(String updatedPassword) {
         return new UserEntity(this.id, this.username, updatedPassword,
-                this.email, this.friendsListIds, this.trackVotes, this.lastLogin);
+                this.email, this.friendsListIds, this.requestsReceivedIds, this.trackVotes, this.lastLogin);
     }
 
     @Override public String toString() {
@@ -80,6 +86,7 @@ public class UserEntity {
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", friendsListIds=" + friendsListIds +
+                ", requestsReceivedIds=" + requestsReceivedIds +
                 ", trackVotes=" + trackVotes +
                 ", lastLogin=" + lastLogin +
                 '}';
@@ -88,10 +95,12 @@ public class UserEntity {
     public static UserEntity create(String username, String password, String email) {
         final String id = UUID.randomUUID().toString();
         final Set<String> friendsListIds = new HashSet<>();
+        final Set<String> requestsReceivedIds = new HashSet<>();
         final Map<String, Long> votesMap = new HashMap<>();
         final Instant firstLogin = Instant.now().truncatedTo(ChronoUnit.SECONDS);
 
-        return new UserEntity(id, username, password, email, friendsListIds, votesMap, firstLogin);
+        return new UserEntity(id, username, password, email,
+                friendsListIds, requestsReceivedIds, votesMap, firstLogin);
     }
 
     public String getId() {
@@ -112,6 +121,10 @@ public class UserEntity {
 
     public Set<String> getFriendsListIds() {
         return friendsListIds;
+    }
+
+    public Set<String> getRequestsReceivedIds() {
+        return requestsReceivedIds;
     }
 
     public Map<String, Long> getTrackVotes() {
@@ -135,6 +148,7 @@ public class UserEntity {
                 && password.equals(user.password) &&
                 email.equals(user.email) &&
                 friendsListIds.equals(user.friendsListIds) &&
+                requestsReceivedIds.equals(user.requestsReceivedIds) &&
                 trackVotes.equals(user.trackVotes) &&
                 lastLogin.equals(user.lastLogin);
     }
@@ -142,7 +156,7 @@ public class UserEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id, username, password, email,
-                friendsListIds, trackVotes, lastLogin);
+                friendsListIds, requestsReceivedIds, trackVotes, lastLogin);
     }
 
     public static class UpdateBuilder {
@@ -184,6 +198,11 @@ public class UserEntity {
 
         public UpdateBuilder setFriendsListIds(Set<String> listIds) {
             set(FIELD_FRIENDS_LIST_IDS, listIds);
+            return this;
+        }
+
+        public UpdateBuilder setRequestsReceivedIds(Set<String> requests) {
+            set(FIELD_REQUESTS_RECEIVED, requests);
             return this;
         }
 
