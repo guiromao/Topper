@@ -7,7 +7,9 @@ import co.topper.domain.data.entity.UserEntity.UpdateBuilder;
 import co.topper.domain.data.repository.UserRepository;
 import co.topper.domain.exception.FriendRequestNotFoundException;
 import co.topper.domain.exception.NotFriendsConnectionException;
+import co.topper.domain.exception.RequestAlreadySentException;
 import co.topper.domain.exception.ResourceNotFoundException;
+import co.topper.domain.exception.UserAlreadyFriendsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
@@ -33,57 +35,29 @@ public class FriendServiceImpl implements FriendService {
 
     @Override
     public void sendRequest(String userId, String friendId) {
-        UserEntity possibleFriend = userRepository.findById(friendId)
-                .orElseThrow(() -> new ResourceNotFoundException(friendId, UserEntity.class));
+        UserEntity possibleFriend = fetchUser(friendId);
 
-        if (!possibleFriend.getRequestsReceivedIds().contains(userId) &&
-                !possibleFriend.getFriendsListIds().contains(userId)) {
-            Set<String> requestIds = possibleFriend.getRequestsReceivedIds();
-            requestIds.add(userId);
-
-            Update update = UserEntity.UpdateBuilder.create()
-                    .setRequestsReceivedIds(requestIds)
-                    .build()
-                    .orElseThrow(() -> new RuntimeException("Error creating update for adding friend"));
-
-            userRepository.updateUser(friendId, update);
+        if (possibleFriend.getRequestsReceivedIds().contains(userId)) {
+            throw new RequestAlreadySentException(friendId);
         }
+
+        if (possibleFriend.getFriendsListIds().contains(userId)) {
+            throw new UserAlreadyFriendsException(friendId);
+        }
+
+        userRepository.updateUser(friendId, new Update().push(KEY_REQUEST_IDS, userId));
     }
 
     @Override
     public void acceptRequest(String userId, String friendId) {
-        UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException(userId, UserEntity.class));
-        UserEntity friend = userRepository.findById(friendId)
-                .orElseThrow(() -> new ResourceNotFoundException(friendId, UserEntity.class));
-
-        Set<String> userFriends = user.getFriendsListIds();
-        Set<String> userReceivedRequests = user.getRequestsReceivedIds();
-        Set<String> friendFriends = friend.getFriendsListIds();
-
-        userReceivedRequests.remove(friendId);
-        userFriends.add(friendId);
-        friendFriends.add(userId);
-
-        Update updateUser = UpdateBuilder.create()
-                .setRequestsReceivedIds(userReceivedRequests)
-                .setFriendsListIds(userFriends)
-                .build()
-                .orElseThrow(() -> new RuntimeException("Error creating update for User 1"));
-
-        Update updateFriend = UpdateBuilder.create()
-                .setFriendsListIds(friendFriends)
-                .build()
-                .orElseThrow(() -> new RuntimeException("Error creating update for User 2"));
-
-        userRepository.updateUser(userId, updateUser);
-        userRepository.updateUser(friendId, updateFriend);
+        userRepository.updateUser(userId, new Update().pull(KEY_REQUEST_IDS, friendId));
+        userRepository.updateUser(userId, new Update().push(KEY_FRIENDS, friendId));
+        userRepository.updateUser(friendId, new Update().push(KEY_FRIENDS, userId));
     }
 
     @Override
     public void refuseRequest(String userId, String senderId) {
-        UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException(userId, UserEntity.class));
+        UserEntity user = fetchUser(userId);
 
         if (!user.getRequestsReceivedIds().contains(senderId)) {
             throw new FriendRequestNotFoundException(senderId);
@@ -94,8 +68,7 @@ public class FriendServiceImpl implements FriendService {
 
     @Override
     public FriendDto getFriend(String userId, String friendId) {
-        UserEntity friend = userRepository.findById(friendId)
-                .orElseThrow(() -> new ResourceNotFoundException(friendId, UserEntity.class));
+        UserEntity friend = fetchUser(friendId);
 
         if (!friend.getFriendsListIds().contains(userId)) {
             throw new NotFriendsConnectionException(userId);
@@ -106,10 +79,8 @@ public class FriendServiceImpl implements FriendService {
 
     @Override
     public void unfriend(String userId, String friendId) {
-        UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException(userId, UserEntity.class));
-        UserEntity friend = userRepository.findById(friendId)
-                .orElseThrow(() -> new ResourceNotFoundException(friendId, UserEntity.class));
+        UserEntity user = fetchUser(userId);
+        UserEntity friend = fetchUser(friendId);
 
         if (!user.getFriendsListIds().contains(friendId) ||
                 !friend.getFriendsListIds().contains(userId)) {
@@ -118,6 +89,11 @@ public class FriendServiceImpl implements FriendService {
 
         userRepository.updateUser(userId, new Update().pull(KEY_FRIENDS, friendId));
         userRepository.updateUser(friendId, new Update().pull(KEY_FRIENDS, userId));
+    }
+
+    private UserEntity fetchUser(String userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException(userId, UserEntity.class));
     }
 
 }
