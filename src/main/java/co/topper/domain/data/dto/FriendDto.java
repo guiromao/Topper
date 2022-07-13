@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import java.util.Map;
+import java.util.List;
 import java.util.Objects;
 
 @JsonPropertyOrder(alphabetic = true)
@@ -18,19 +18,19 @@ public class FriendDto {
 
     private static final String PROPERTY_FRIEND_ID = "friendId";
     private static final String PROPERTY_USERNAME = "username";
-    private static final String PROPERTY_TRACK_VOTES = "trackVotes";
+    private static final String PROPERTY_LIKED_TRACKS = "likedTracks";
 
     private final String friendId;
     private final String username;
-    private final Map<String, Long> trackVotes;
+    private final List<TopDto> likedTracks;
 
     @JsonCreator
     public FriendDto(@JsonProperty(PROPERTY_FRIEND_ID) String friendId,
                      @JsonProperty(PROPERTY_USERNAME) String username,
-                     @JsonProperty(PROPERTY_TRACK_VOTES) Map<String, Long> trackVotes) {
+                     @JsonProperty(PROPERTY_LIKED_TRACKS) List<TopDto> likedTracks) {
         this.friendId = friendId;
         this.username = username;
-        this.trackVotes = trackVotes;
+        this.likedTracks = likedTracks;
     }
 
     @Override
@@ -38,7 +38,8 @@ public class FriendDto {
         return "FriendDto{" +
                 "friendId='" + friendId + '\'' +
                 ", username='" + username + '\'' +
-                ", trackVotes=" + trackVotes +
+                ", likedTracks=" + likedTracks +
+                ", likedTracks=" + likedTracks +
                 '}';
     }
 
@@ -50,8 +51,8 @@ public class FriendDto {
         return username;
     }
 
-    public Map<String, Long> getTrackVotes() {
-        return trackVotes;
+    public List<TopDto> getLikedTracks() {
+        return likedTracks;
     }
 
     @Override
@@ -63,12 +64,12 @@ public class FriendDto {
             return false;
         }
         FriendDto friendDto = (FriendDto) o;
-        return friendId.equals(friendDto.friendId) && username.equals(friendDto.username) && trackVotes.equals(friendDto.trackVotes);
+        return friendId.equals(friendDto.friendId) && username.equals(friendDto.username) &&
+                likedTracks.equals(friendDto.likedTracks);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(friendId, username, trackVotes);
+        return Objects.hash(friendId, username, likedTracks);
     }
-
 }

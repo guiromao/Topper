@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -39,6 +40,21 @@ public class DataManagerImpl implements DataManager {
         handleTrack(voteDto);
         handleAlbum(voteDto.getAlbum());
         handleArtists(voteDto.getArtists());
+    }
+
+    @Override
+    public List<TrackEntity> getTracks(List<String> trackIds) {
+        return (List<TrackEntity>) trackRepository.findAllById(trackIds);
+    }
+
+    @Override
+    public List<AlbumEntity> getAlbums(List<String> albumIds) {
+        return (List<AlbumEntity>) albumRepository.findAllById(albumIds);
+    }
+
+    @Override
+    public List<ArtistEntity> getArtists(List<String> artistIds) {
+        return (List<ArtistEntity>) artistRepository.findAllById(artistIds);
     }
 
     private void handleTrack(TrackDto trackDto) {
