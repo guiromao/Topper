@@ -12,6 +12,7 @@ import se.michaelthelin.spotify.model_objects.specification.Paging;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -49,7 +50,8 @@ public class TrackConverter {
 
     public List<TopDto> toDtoList(List<TrackEntity> tracks,
                                   List<AlbumEntity> albums,
-                                  List<ArtistEntity> artists) {
+                                  List<ArtistEntity> artists,
+                                  Map<String, Long> trackVotes) {
 
         return tracks.stream()
                 .map(track -> new TopDto(
@@ -61,7 +63,9 @@ public class TrackConverter {
                         Objects.nonNull(track.getAlbumId()) ?
                                 albumConverter.toDto(track, albums)
                                 : null,
-                        track.getVotes()
+                        Objects.isNull(trackVotes) ?
+                                track.getVotes()
+                                : trackVotes.get(track.getId())
                 ))
                 .toList();
 

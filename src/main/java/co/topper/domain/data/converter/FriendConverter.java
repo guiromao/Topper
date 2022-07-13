@@ -8,6 +8,7 @@ import co.topper.domain.data.entity.UserEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Component
@@ -20,13 +21,17 @@ public class FriendConverter {
     }
 
     public FriendDto toDto(UserEntity user,
+                           Map<String, Long> trackVotes,
                            List<TrackEntity> tracks,
                            List<AlbumEntity> albums,
                            List<ArtistEntity> artists) {
         return new FriendDto(
             user.getId(),
             user.getUsername(),
-            trackConverter.toDtoList(tracks, albums, artists)
+            trackConverter.toDtoList(tracks,
+                    albums,
+                    artists,
+                    trackVotes)
         );
     }
 

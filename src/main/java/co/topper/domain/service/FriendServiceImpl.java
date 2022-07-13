@@ -86,6 +86,7 @@ public class FriendServiceImpl implements FriendService {
         List<ArtistEntity> friendArtists = dataManager.getArtists(extractArtists(friendTracks));
 
         return friendConverter.toDto(friend,
+                friend.getTrackVotes(),
                 friendTracks,
                 friendAlbums,
                 friendArtists);
