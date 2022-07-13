@@ -35,4 +35,5 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
         return mongoTemplate.findAndModify(query, update, findAndModifyOptions, UserEntity.class);
     }
 
+
 }

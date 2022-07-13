@@ -5,6 +5,7 @@ import co.topper.domain.data.dto.FriendDto;
 import co.topper.domain.data.entity.UserEntity;
 import co.topper.domain.data.entity.UserEntity.UpdateBuilder;
 import co.topper.domain.data.repository.UserRepository;
+import co.topper.domain.exception.FriendRequestNotFoundException;
 import co.topper.domain.exception.NotFriendsConnectionException;
 import co.topper.domain.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,9 @@ import java.util.Set;
 
 @Service
 public class FriendServiceImpl implements FriendService {
+
+    private static final String KEY_FRIENDS = "friendsListIds" + ".";
+    private static final String KEY_REQUEST_IDS = "requestsReceivedIds" + ".";
 
     private final UserRepository userRepository;
     private final FriendConverter friendConverter;
@@ -28,9 +32,9 @@ public class FriendServiceImpl implements FriendService {
 
 
     @Override
-    public void sendRequest(String userId, String targetId) {
-        UserEntity possibleFriend = userRepository.findById(targetId)
-                .orElseThrow(() -> new ResourceNotFoundException(targetId, UserEntity.class));
+    public void sendRequest(String userId, String friendId) {
+        UserEntity possibleFriend = userRepository.findById(friendId)
+                .orElseThrow(() -> new ResourceNotFoundException(friendId, UserEntity.class));
 
         if (!possibleFriend.getRequestsReceivedIds().contains(userId) &&
                 !possibleFriend.getFriendsListIds().contains(userId)) {
@@ -42,50 +46,78 @@ public class FriendServiceImpl implements FriendService {
                     .build()
                     .orElseThrow(() -> new RuntimeException("Error creating update for adding friend"));
 
-            userRepository.updateUser(targetId, update);
+            userRepository.updateUser(friendId, update);
         }
     }
 
     @Override
-    public void acceptRequest(String userId, String targetId) {
-        UserEntity user1 = userRepository.findById(userId)
+    public void acceptRequest(String userId, String friendId) {
+        UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(userId, UserEntity.class));
-        UserEntity user2 = userRepository.findById(targetId)
-                .orElseThrow(() -> new ResourceNotFoundException(targetId, UserEntity.class));
+        UserEntity friend = userRepository.findById(friendId)
+                .orElseThrow(() -> new ResourceNotFoundException(friendId, UserEntity.class));
 
-        Set<String> user1Friends = user1.getFriendsListIds();
-        Set<String> user1ReceivedRequests = user1.getRequestsReceivedIds();
-        Set<String> user2Friends = user2.getFriendsListIds();
+        Set<String> userFriends = user.getFriendsListIds();
+        Set<String> userReceivedRequests = user.getRequestsReceivedIds();
+        Set<String> friendFriends = friend.getFriendsListIds();
 
-        user1ReceivedRequests.remove(targetId);
-        user1Friends.add(targetId);
-        user2Friends.add(userId);
+        userReceivedRequests.remove(friendId);
+        userFriends.add(friendId);
+        friendFriends.add(userId);
 
-        Update updateUser1 = UpdateBuilder.create()
-                .setRequestsReceivedIds(user1ReceivedRequests)
-                .setFriendsListIds(user1Friends)
+        Update updateUser = UpdateBuilder.create()
+                .setRequestsReceivedIds(userReceivedRequests)
+                .setFriendsListIds(userFriends)
                 .build()
                 .orElseThrow(() -> new RuntimeException("Error creating update for User 1"));
 
-        Update updateUser2 = UpdateBuilder.create()
-                .setFriendsListIds(user2Friends)
+        Update updateFriend = UpdateBuilder.create()
+                .setFriendsListIds(friendFriends)
                 .build()
                 .orElseThrow(() -> new RuntimeException("Error creating update for User 2"));
 
-        userRepository.updateUser(userId, updateUser1);
-        userRepository.updateUser(targetId, updateUser2);
+        userRepository.updateUser(userId, updateUser);
+        userRepository.updateUser(friendId, updateFriend);
     }
 
     @Override
-    public FriendDto getFriend(String userId, String targetId) {
-        UserEntity friend = userRepository.findById(targetId)
-                .orElseThrow(() -> new ResourceNotFoundException(targetId, UserEntity.class));
+    public void refuseRequest(String userId, String senderId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException(userId, UserEntity.class));
+
+        if (!user.getRequestsReceivedIds().contains(senderId)) {
+            throw new FriendRequestNotFoundException(senderId);
+        }
+
+        userRepository.updateUser(userId, new Update().pull(KEY_REQUEST_IDS, senderId));
+    }
+
+    @Override
+    public FriendDto getFriend(String userId, String friendId) {
+        UserEntity friend = userRepository.findById(friendId)
+                .orElseThrow(() -> new ResourceNotFoundException(friendId, UserEntity.class));
 
         if (!friend.getFriendsListIds().contains(userId)) {
             throw new NotFriendsConnectionException(userId);
         }
 
         return friendConverter.toDto(friend);
+    }
+
+    @Override
+    public void unfriend(String userId, String friendId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException(userId, UserEntity.class));
+        UserEntity friend = userRepository.findById(friendId)
+                .orElseThrow(() -> new ResourceNotFoundException(friendId, UserEntity.class));
+
+        if (!user.getFriendsListIds().contains(friendId) ||
+                !friend.getFriendsListIds().contains(userId)) {
+            throw new NotFriendsConnectionException(userId, friendId);
+        }
+
+        userRepository.updateUser(userId, new Update().pull(KEY_FRIENDS, friendId));
+        userRepository.updateUser(friendId, new Update().pull(KEY_FRIENDS, userId));
     }
 
 }

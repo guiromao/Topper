@@ -2,6 +2,7 @@ package co.topper.domain.controller;
 
 import co.topper.domain.exception.ConnectivityFailureException;
 import co.topper.domain.exception.EmptySearchTextException;
+import co.topper.domain.exception.FriendRequestNotFoundException;
 import co.topper.domain.exception.InvalidArgumentsException;
 import co.topper.domain.exception.TailoredResponse;
 import co.topper.domain.exception.ResourceNotFoundException;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class TopperControllerAdvice {
 
-    @ExceptionHandler({ResourceNotFoundException.class})
+    @ExceptionHandler({ResourceNotFoundException.class, FriendRequestNotFoundException.class})
     public ResponseEntity<Object> handleNotFoundExceptions(Exception ex) {
         TailoredResponse response = TailoredResponse.of(HttpStatus.NOT_FOUND.value(),
                 HttpStatus.NOT_FOUND.getReasonPhrase(), ex.getMessage());

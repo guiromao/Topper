@@ -4,10 +4,14 @@ import co.topper.domain.data.dto.FriendDto;
 
 public interface FriendService {
 
-    void sendRequest(String userId, String targetId);
+    void sendRequest(String userId, String friendId);
 
-    void acceptRequest(String userId, String targetId);
+    void acceptRequest(String userId, String friendId);
 
-    FriendDto getFriend(String userId, String targetId);
+    void refuseRequest(String userId, String senderId);
+
+    FriendDto getFriend(String userId, String friendId);
+
+    void unfriend(String userId, String friendId);
 
 }
