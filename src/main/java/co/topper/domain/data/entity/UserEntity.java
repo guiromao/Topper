@@ -58,7 +58,7 @@ public class UserEntity {
     private final Instant lastLogin;
 
     @Field(FIELD_ROLES)
-    private final Set<RoleEntity> roles;
+    private final Set<Role> roles;
 
     public UserEntity(String id,
                       String username,
@@ -68,7 +68,7 @@ public class UserEntity {
                       Set<String> requestsReceivedIds,
                       Map<String, Long> trackVotes,
                       Instant lastLogin,
-                      Set<RoleEntity> roles) {
+                      Set<Role> roles) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -107,7 +107,7 @@ public class UserEntity {
         final Set<String> requestsReceivedIds = new HashSet<>();
         final Map<String, Long> votesMap = new HashMap<>();
         final Instant firstLogin = Instant.now().truncatedTo(ChronoUnit.SECONDS);
-        final Set<RoleEntity> roles = Set.of(new RoleEntity(Role.USER));
+        final Set<Role> roles = Set.of(Role.USER);
 
         return new UserEntity(id, username, password, email,
                 friendsListIds, requestsReceivedIds, votesMap, firstLogin, roles);
@@ -145,7 +145,7 @@ public class UserEntity {
         return lastLogin;
     }
 
-    public Set<RoleEntity> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
@@ -221,7 +221,7 @@ public class UserEntity {
             return this;
         }
 
-        public UpdateBuilder setRoles(Set<RoleEntity> roles) {
+        public UpdateBuilder setRoles(Set<Role> roles) {
             set(FIELD_ROLES, roles);
             return this;
         }

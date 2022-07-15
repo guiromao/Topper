@@ -1,8 +1,10 @@
 package co.topper.domain.data.entity;
 
+import org.springframework.security.core.GrantedAuthority;
+
 import java.util.stream.Stream;
 
-public enum Role {
+public enum Role implements GrantedAuthority {
 
     ADMIN(1),
     USER(2);
@@ -29,6 +31,11 @@ public enum Role {
                 .filter(role -> role.getId() == id)
                 .findFirst()
                 .orElse(null);
+    }
+
+    @Override
+    public String getAuthority() {
+        return name();
     }
 
 }
