@@ -9,6 +9,7 @@ public final class UserConstants {
     public static final String FIELD_FRIENDS_LIST_IDS = "friendsListIds";
     public static final String FIELD_REQUESTS_RECEIVED = "requestsReceivedIds";
     public static final String FIELD_LAST_LOGIN = "lastLogin";
+    public static final String FIELD_ROLES = "roles";
 
     public static final String PROPERTY_ID = "userId";
     public static final String PROPERTY_USERNAME = FIELD_USERNAME;

@@ -7,6 +7,7 @@ import co.topper.domain.exception.InvalidArgumentsException;
 import co.topper.domain.exception.TailoredResponse;
 import co.topper.domain.exception.ResourceNotFoundException;
 import co.topper.domain.exception.UserAlreadyExistingException;
+import co.topper.domain.exception.UserEmailNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -15,7 +16,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class TopperControllerAdvice {
 
-    @ExceptionHandler({ResourceNotFoundException.class, FriendRequestNotFoundException.class})
+    @ExceptionHandler({ResourceNotFoundException.class, FriendRequestNotFoundException.class,
+            UserEmailNotFoundException.class})
     public ResponseEntity<Object> handleNotFoundExceptions(Exception ex) {
         TailoredResponse response = TailoredResponse.of(HttpStatus.NOT_FOUND.value(),
                 HttpStatus.NOT_FOUND.getReasonPhrase(), ex.getMessage());

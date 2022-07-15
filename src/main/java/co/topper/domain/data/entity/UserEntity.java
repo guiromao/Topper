@@ -22,6 +22,7 @@ import static co.topper.configuration.constants.UserConstants.FIELD_FRIENDS_LIST
 import static co.topper.configuration.constants.UserConstants.FIELD_LAST_LOGIN;
 import static co.topper.configuration.constants.UserConstants.FIELD_PASSWORD;
 import static co.topper.configuration.constants.UserConstants.FIELD_REQUESTS_RECEIVED;
+import static co.topper.configuration.constants.UserConstants.FIELD_ROLES;
 import static co.topper.configuration.constants.UserConstants.FIELD_TRACK_VOTES;
 import static co.topper.configuration.constants.UserConstants.FIELD_USERNAME;
 
@@ -56,6 +57,9 @@ public class UserEntity {
     @Field(FIELD_LAST_LOGIN)
     private final Instant lastLogin;
 
+    @Field(FIELD_ROLES)
+    private final Set<RoleEntity> roles;
+
     public UserEntity(String id,
                       String username,
                       String password,
@@ -63,7 +67,8 @@ public class UserEntity {
                       Set<String> friendsListIds,
                       Set<String> requestsReceivedIds,
                       Map<String, Long> trackVotes,
-                      Instant lastLogin) {
+                      Instant lastLogin,
+                      Set<RoleEntity> roles) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -72,14 +77,17 @@ public class UserEntity {
         this.requestsReceivedIds = requestsReceivedIds;
         this.trackVotes = trackVotes;
         this.lastLogin = lastLogin;
+        this.roles = roles;
     }
 
     public UserEntity withPassword(String updatedPassword) {
         return new UserEntity(this.id, this.username, updatedPassword,
-                this.email, this.friendsListIds, this.requestsReceivedIds, this.trackVotes, this.lastLogin);
+                this.email, this.friendsListIds, this.requestsReceivedIds, this.trackVotes,
+                this.lastLogin, this.roles);
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "UserEntity{" +
                 "id='" + id + '\'' +
                 ", username='" + username + '\'' +
@@ -89,6 +97,7 @@ public class UserEntity {
                 ", requestsReceivedIds=" + requestsReceivedIds +
                 ", trackVotes=" + trackVotes +
                 ", lastLogin=" + lastLogin +
+                ", roles=" + roles +
                 '}';
     }
 
@@ -98,9 +107,10 @@ public class UserEntity {
         final Set<String> requestsReceivedIds = new HashSet<>();
         final Map<String, Long> votesMap = new HashMap<>();
         final Instant firstLogin = Instant.now().truncatedTo(ChronoUnit.SECONDS);
+        final Set<RoleEntity> roles = Set.of(new RoleEntity(Role.USER));
 
         return new UserEntity(id, username, password, email,
-                friendsListIds, requestsReceivedIds, votesMap, firstLogin);
+                friendsListIds, requestsReceivedIds, votesMap, firstLogin, roles);
     }
 
     public String getId() {
@@ -135,6 +145,10 @@ public class UserEntity {
         return lastLogin;
     }
 
+    public Set<RoleEntity> getRoles() {
+        return roles;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -150,13 +164,14 @@ public class UserEntity {
                 friendsListIds.equals(user.friendsListIds) &&
                 requestsReceivedIds.equals(user.requestsReceivedIds) &&
                 trackVotes.equals(user.trackVotes) &&
-                lastLogin.equals(user.lastLogin);
+                lastLogin.equals(user.lastLogin) &&
+                Objects.equals(roles, user.roles);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id, username, password, email,
-                friendsListIds, requestsReceivedIds, trackVotes, lastLogin);
+                friendsListIds, requestsReceivedIds, trackVotes, lastLogin, roles);
     }
 
     public static class UpdateBuilder {
@@ -203,6 +218,11 @@ public class UserEntity {
 
         public UpdateBuilder setRequestsReceivedIds(Set<String> requests) {
             set(FIELD_REQUESTS_RECEIVED, requests);
+            return this;
+        }
+
+        public UpdateBuilder setRoles(Set<RoleEntity> roles) {
+            set(FIELD_ROLES, roles);
             return this;
         }
 
