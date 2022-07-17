@@ -28,3 +28,7 @@ fYnVGliQQrPQExFV4CLyhwH9CbZFvo1klGgRyH+HYRWNUPVuM2L0bxj5ZR3QUhew
 SGmM3nYf9O6knYWmpBthDlaDExi8jGcZKv42yFgW+ZRxQsFNVu2vK+bLySli2Ip2
 R/EQ2aJLeHDDjpXIWnlg7A==
 -----END CERTIFICATE-----
+
+
+keytool -genkeypair -alias topperjwt -keyalg RSA -keypass topperjwt -keystore topperjwt.jks -storepass topperjwt
+keytool -list -rfc --keystore topperjwt.jks | openssl x509 -inform pem -pubkey
