@@ -4,9 +4,9 @@ import co.topper.domain.data.dto.SuccessVoteDto;
 import co.topper.domain.data.dto.VoteDto;
 import co.topper.domain.service.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,10 +25,10 @@ public class VoteController {
         this.voteService = voteService;
     }
 
-    @PostMapping("/{userId}")
-    public SuccessVoteDto vote(@PathVariable("userId") String userId,
+    @PostMapping
+    public SuccessVoteDto vote(@RequestHeader("Authorization") String header,
                                @RequestBody VoteDto voteDto) {
-        return voteService.vote(voteDto, userId);
+        return voteService.vote(voteDto, header);
     }
 
 }

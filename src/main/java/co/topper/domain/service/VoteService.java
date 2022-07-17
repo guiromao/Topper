@@ -8,6 +8,6 @@ import co.topper.domain.data.dto.VoteDto;
  */
 public interface VoteService {
 
-    SuccessVoteDto vote(VoteDto vote, String userId);
+    SuccessVoteDto vote(VoteDto vote, String header);
 
 }
