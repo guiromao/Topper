@@ -1,5 +1,6 @@
 package co.topper.domain.service;
 
+import co.topper.configuration.RedisConfiguration;
 import co.topper.domain.data.converter.UserConverter;
 import co.topper.domain.data.dto.UserDto;
 import co.topper.domain.data.entity.UserEntity;
@@ -7,7 +8,10 @@ import co.topper.domain.data.entity.UserEntity.UpdateBuilder;
 import co.topper.domain.data.repository.UserRepository;
 import co.topper.domain.exception.ResourceNotFoundException;
 import co.topper.domain.exception.UserAlreadyExistingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,6 +21,8 @@ import java.util.Objects;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(UserServiceImpl.class.getName());
 
     private final UserRepository userRepository;
     private final UserConverter userConverter;
@@ -44,6 +50,7 @@ public class UserServiceImpl implements UserService {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(userId, UserEntity.class));
 
+        // Hide password before sending the DTO
         user = user.withPassword(null);
 
         return userConverter.toDto(user);

@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.query.Update;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
@@ -29,7 +30,9 @@ import static co.topper.configuration.constants.UserConstants.FIELD_USERNAME;
 @Document(collection = UserEntity.USER_COLLECTION)
 @TypeAlias(UserEntity.USER_COLLECTION)
 @CompoundIndex(name = "votes_idx", def = "{'trackVotes' : 1}")
-public class UserEntity {
+public class UserEntity implements Serializable {
+
+    private static final Long serialId = 1L;
 
     public static final String USER_COLLECTION = "user";
 
