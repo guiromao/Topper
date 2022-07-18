@@ -4,6 +4,7 @@ import co.topper.domain.exception.ConnectivityFailureException;
 import co.topper.domain.exception.EmptySearchTextException;
 import co.topper.domain.exception.FriendRequestNotFoundException;
 import co.topper.domain.exception.InvalidArgumentsException;
+import co.topper.domain.exception.NotEnoughAvailableVotesException;
 import co.topper.domain.exception.TailoredResponse;
 import co.topper.domain.exception.ResourceNotFoundException;
 import co.topper.domain.exception.TokenReadException;
@@ -35,7 +36,8 @@ public class TopperControllerAdvice {
     }
 
     @ExceptionHandler({UserAlreadyExistingException.class, EmptySearchTextException.class,
-            InvalidArgumentsException.class, TokenReadException.class})
+            InvalidArgumentsException.class, TokenReadException.class,
+            NotEnoughAvailableVotesException.class})
     public ResponseEntity<Object> handleBadRequest(Exception ex) {
         TailoredResponse response = TailoredResponse.of(HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(), ex.getMessage());

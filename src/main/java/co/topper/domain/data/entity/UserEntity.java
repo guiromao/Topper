@@ -18,9 +18,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import static co.topper.configuration.constants.UserConstants.FIELD_AVAILABLE_VOTES;
 import static co.topper.configuration.constants.UserConstants.FIELD_EMAIL;
 import static co.topper.configuration.constants.UserConstants.FIELD_FRIENDS_LIST_IDS;
-import static co.topper.configuration.constants.UserConstants.FIELD_LAST_LOGIN;
+import static co.topper.configuration.constants.UserConstants.FIELD_LAST_VOTE_ATTEMPT;
 import static co.topper.configuration.constants.UserConstants.FIELD_PASSWORD;
 import static co.topper.configuration.constants.UserConstants.FIELD_REQUESTS_RECEIVED;
 import static co.topper.configuration.constants.UserConstants.FIELD_ROLES;
@@ -57,8 +58,11 @@ public class UserEntity implements Serializable {
     @Field(FIELD_TRACK_VOTES)
     private final Map<String, Long> trackVotes;
 
-    @Field(FIELD_LAST_LOGIN)
-    private final Instant lastLogin;
+    @Field(FIELD_AVAILABLE_VOTES)
+    private final Long availableVotes;
+
+    @Field(FIELD_LAST_VOTE_ATTEMPT)
+    private final Instant lastVoteAttempt;
 
     @Field(FIELD_ROLES)
     private final Set<Role> roles;
@@ -70,7 +74,8 @@ public class UserEntity implements Serializable {
                       Set<String> friendsListIds,
                       Set<String> requestsReceivedIds,
                       Map<String, Long> trackVotes,
-                      Instant lastLogin,
+                      Long availableVotes,
+                      Instant lastVoteAttempt,
                       Set<Role> roles) {
         this.id = id;
         this.username = username;
@@ -79,14 +84,15 @@ public class UserEntity implements Serializable {
         this.friendsListIds = friendsListIds;
         this.requestsReceivedIds = requestsReceivedIds;
         this.trackVotes = trackVotes;
-        this.lastLogin = lastLogin;
+        this.availableVotes = availableVotes;
+        this.lastVoteAttempt = lastVoteAttempt;
         this.roles = roles;
     }
 
     public UserEntity withPassword(String updatedPassword) {
         return new UserEntity(this.id, this.username, updatedPassword,
                 this.email, this.friendsListIds, this.requestsReceivedIds, this.trackVotes,
-                this.lastLogin, this.roles);
+                this.availableVotes, this.lastVoteAttempt, this.roles);
     }
 
     @Override
@@ -99,7 +105,8 @@ public class UserEntity implements Serializable {
                 ", friendsListIds=" + friendsListIds +
                 ", requestsReceivedIds=" + requestsReceivedIds +
                 ", trackVotes=" + trackVotes +
-                ", lastLogin=" + lastLogin +
+                ", availableVotes=" + availableVotes +
+                ", lastVoteAttempt=" + lastVoteAttempt +
                 ", roles=" + roles +
                 '}';
     }
@@ -109,11 +116,13 @@ public class UserEntity implements Serializable {
         final Set<String> friendsListIds = new HashSet<>();
         final Set<String> requestsReceivedIds = new HashSet<>();
         final Map<String, Long> votesMap = new HashMap<>();
+        final Long availableVotes = 1000L;
         final Instant firstLogin = Instant.now().truncatedTo(ChronoUnit.SECONDS);
         final Set<Role> roles = Set.of(Role.USER);
 
         return new UserEntity(id, username, password, email,
-                friendsListIds, requestsReceivedIds, votesMap, firstLogin, roles);
+                friendsListIds, requestsReceivedIds, votesMap,
+                availableVotes, firstLogin, roles);
     }
 
     public String getId() {
@@ -144,8 +153,12 @@ public class UserEntity implements Serializable {
         return trackVotes;
     }
 
-    public Instant getLastLogin() {
-        return lastLogin;
+    public Long getAvailableVotes() {
+        return availableVotes;
+    }
+
+    public Instant getLastVoteAttempt() {
+        return lastVoteAttempt;
     }
 
     public Set<Role> getRoles() {
@@ -167,14 +180,16 @@ public class UserEntity implements Serializable {
                 friendsListIds.equals(user.friendsListIds) &&
                 requestsReceivedIds.equals(user.requestsReceivedIds) &&
                 trackVotes.equals(user.trackVotes) &&
-                lastLogin.equals(user.lastLogin) &&
+                availableVotes.equals(user.getAvailableVotes()) &&
+                lastVoteAttempt.equals(user.lastVoteAttempt) &&
                 Objects.equals(roles, user.roles);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id, username, password, email,
-                friendsListIds, requestsReceivedIds, trackVotes, lastLogin, roles);
+                friendsListIds, requestsReceivedIds, trackVotes,
+                availableVotes, lastVoteAttempt, roles);
     }
 
     public static class UpdateBuilder {
@@ -209,8 +224,23 @@ public class UserEntity implements Serializable {
             return this;
         }
 
-        public UpdateBuilder setLastLogin(Instant lastLogin) {
-            set(FIELD_LAST_LOGIN, lastLogin);
+        public UpdateBuilder incrementTrackVotes(String trackId, Long votes) {
+            update.inc(FIELD_TRACK_VOTES + "." + trackId, votes);
+            return this;
+        }
+
+        public UpdateBuilder setAvailableVotes(Long votes) {
+            set(FIELD_AVAILABLE_VOTES, votes);
+            return this;
+        }
+
+        public UpdateBuilder decrementAvailableVotes(Long votes) {
+            update.inc(FIELD_AVAILABLE_VOTES, -votes);
+            return this;
+        }
+
+        public UpdateBuilder setLastVoteAttempt(Instant lastVoteAttempt) {
+            set(FIELD_LAST_VOTE_ATTEMPT, lastVoteAttempt);
             return this;
         }
 

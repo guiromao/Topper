@@ -9,6 +9,8 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
+import static co.topper.configuration.constants.UserConstants.FIELD_AVAILABLE_VOTES;
+
 import java.util.Optional;
 
 public class UserRepositoryCustomImpl implements UserRepositoryCustom {
@@ -47,7 +49,8 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
     @Override
     public UserEntity updateVotes(String userId, String trackId, Long votes) {
         Query query = Query.query(Criteria.where(FIELD_ID).is(userId));
-        Update update = new Update().inc(FIELD_TRACK_VOTES + "." + trackId, votes);
+        Update update = new Update().inc(FIELD_TRACK_VOTES + "." + trackId, votes)
+                .inc(FIELD_AVAILABLE_VOTES, -votes);
         FindAndModifyOptions findAndModifyOptions = FindAndModifyOptions.options().returnNew(true);
 
         return mongoTemplate.findAndModify(query, update, findAndModifyOptions, UserEntity.class);

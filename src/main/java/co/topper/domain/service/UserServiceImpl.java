@@ -11,7 +11,6 @@ import co.topper.domain.exception.UserAlreadyExistingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -70,21 +69,10 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    @Override
-    public UserDto updateLastLogin(String userId) {
-        Update loginUpdate = UpdateBuilder.create()
-                .setLastLogin(Instant.now())
-                .build()
-                .orElseThrow(() -> new RuntimeException("Error creating last login update"));
-
-        return userConverter.toDto(userRepository.updateUser(userId, loginUpdate));
-    }
-
     private Update updateOf(UserEntity user) {
         final UpdateBuilder updateBuilder = UpdateBuilder.create()
                 .setUsername(user.getUsername())
                 .setPassword(user.getPassword())
-                .setLastLogin(Instant.now())
                 .setTrackVotes(user.getTrackVotes());
 
         return updateBuilder.build()

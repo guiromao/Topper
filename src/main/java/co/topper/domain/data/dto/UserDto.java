@@ -13,7 +13,7 @@ import java.util.Objects;
 
 import static co.topper.configuration.constants.UserConstants.PROPERTY_EMAIL;
 import static co.topper.configuration.constants.UserConstants.PROPERTY_ID;
-import static co.topper.configuration.constants.UserConstants.PROPERTY_LAST_LOGIN;
+import static co.topper.configuration.constants.UserConstants.PROPERTY_LAST_VOTE_ATTEMPT;
 import static co.topper.configuration.constants.UserConstants.PROPERTY_PASSWORD;
 import static co.topper.configuration.constants.UserConstants.PROPERTY_TRACK_VOTES;
 import static co.topper.configuration.constants.UserConstants.PROPERTY_USERNAME;
@@ -30,7 +30,7 @@ public class UserDto {
     private final String password;
     private final String email;
     private final Map<String, Long> trackVotes;
-    private final Instant lastLogin;
+    private final Instant lastVoteAttempt;
 
     @JsonCreator
     public UserDto(@Nullable @JsonProperty(PROPERTY_ID) String userId,
@@ -38,13 +38,13 @@ public class UserDto {
                    @JsonProperty(PROPERTY_PASSWORD) String password,
                    @JsonProperty(PROPERTY_EMAIL) String email,
                    @Nullable @JsonProperty(PROPERTY_TRACK_VOTES) Map<String, Long> trackVotes,
-                   @Nullable @JsonProperty(PROPERTY_LAST_LOGIN) Instant lastLogin) {
+                   @Nullable @JsonProperty(PROPERTY_LAST_VOTE_ATTEMPT) Instant lastVoteAttempt) {
         this.userId = userId;
         this.username = username;
         this.password = password;
         this.email = email;
         this.trackVotes = trackVotes;
-        this.lastLogin = lastLogin;
+        this.lastVoteAttempt = lastVoteAttempt;
     }
 
     @Override
@@ -55,7 +55,7 @@ public class UserDto {
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", trackVotes=" + trackVotes +
-                ", lastLogin=" + lastLogin +
+                ", lastVoteAttempt=" + lastVoteAttempt +
                 '}';
     }
 
@@ -84,9 +84,9 @@ public class UserDto {
         return trackVotes;
     }
 
-    @JsonProperty(PROPERTY_LAST_LOGIN)
-    public Instant getLastLogin() {
-        return lastLogin;
+    @JsonProperty(PROPERTY_LAST_VOTE_ATTEMPT)
+    public Instant getLastVoteAttempt() {
+        return lastVoteAttempt;
     }
 
     @Override
@@ -99,12 +99,12 @@ public class UserDto {
         }
         UserDto userDto = (UserDto) o;
         return Objects.equals(userId, userDto.userId) && username.equals(userDto.username) && password.equals(userDto.password) &&
-                email.equals(userDto.email) && Objects.equals(trackVotes, userDto.trackVotes) && Objects.equals(lastLogin, userDto.lastLogin);
+                email.equals(userDto.email) && Objects.equals(trackVotes, userDto.trackVotes) && Objects.equals(lastVoteAttempt, userDto.lastVoteAttempt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, username, password, email, trackVotes, lastLogin);
+        return Objects.hash(userId, username, password, email, trackVotes, lastVoteAttempt);
     }
 
 }

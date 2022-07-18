@@ -10,7 +10,7 @@ public class UserConverter {
     public UserDto toDto(UserEntity user) {
         return new UserDto(
                 user.getId(), user.getUsername(), null, user.getEmail(),
-                user.getTrackVotes(), user.getLastLogin()
+                user.getTrackVotes(), user.getLastVoteAttempt()
         );
     }
 

@@ -8,6 +8,4 @@ public interface UserService {
 
     UserDto getUser(String userId);
 
-    UserDto updateLastLogin(String userId);
-
 }

@@ -1,5 +1,7 @@
 package co.topper.domain.service;
 
+import co.topper.domain.data.entity.UserEntity;
+import co.topper.domain.data.repository.UserRepository;
 import co.topper.domain.exception.TokenReadException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,7 +12,6 @@ import java.util.Map;
 
 @Service
 public class TokenReader {
-
     private final ObjectMapper objectMapper;
 
     public TokenReader(ObjectMapper objectMapper) {
@@ -34,5 +35,6 @@ public class TokenReader {
         }
 
     }
+
 
 }

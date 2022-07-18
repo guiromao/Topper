@@ -7,8 +7,9 @@ public final class UserConstants {
     public static final String FIELD_EMAIL = "email";
     public static final String FIELD_TRACK_VOTES = "trackVotes";
     public static final String FIELD_FRIENDS_LIST_IDS = "friendsListIds";
+    public static final String FIELD_AVAILABLE_VOTES = "availableVotes";
     public static final String FIELD_REQUESTS_RECEIVED = "requestsReceivedIds";
-    public static final String FIELD_LAST_LOGIN = "lastLogin";
+    public static final String FIELD_LAST_VOTE_ATTEMPT = "lastVoteAttempt";
     public static final String FIELD_ROLES = "roles";
 
     public static final String PROPERTY_ID = "userId";
@@ -16,7 +17,8 @@ public final class UserConstants {
     public static final String PROPERTY_PASSWORD = FIELD_PASSWORD;
     public static final String PROPERTY_EMAIL = FIELD_EMAIL;
     public static final String PROPERTY_FRIENDS_LIST_IDS = FIELD_FRIENDS_LIST_IDS;
+    public static final String PROPERTY_AVAILABLE_VOTES = FIELD_AVAILABLE_VOTES;
     public static final String PROPERTY_TRACK_VOTES = FIELD_TRACK_VOTES;
-    public static final String PROPERTY_LAST_LOGIN = FIELD_LAST_LOGIN;
+    public static final String PROPERTY_LAST_VOTE_ATTEMPT = FIELD_LAST_VOTE_ATTEMPT;
 
 }
