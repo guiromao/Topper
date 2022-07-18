@@ -11,6 +11,7 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 
+import static co.topper.configuration.constants.UserConstants.PROPERTY_AVAILABLE_VOTES;
 import static co.topper.configuration.constants.UserConstants.PROPERTY_EMAIL;
 import static co.topper.configuration.constants.UserConstants.PROPERTY_ID;
 import static co.topper.configuration.constants.UserConstants.PROPERTY_LAST_VOTE_ATTEMPT;
@@ -30,6 +31,7 @@ public class UserDto {
     private final String password;
     private final String email;
     private final Map<String, Long> trackVotes;
+    private final Long availableVotes;
     private final Instant lastVoteAttempt;
 
     @JsonCreator
@@ -38,12 +40,14 @@ public class UserDto {
                    @JsonProperty(PROPERTY_PASSWORD) String password,
                    @JsonProperty(PROPERTY_EMAIL) String email,
                    @Nullable @JsonProperty(PROPERTY_TRACK_VOTES) Map<String, Long> trackVotes,
+                   @JsonProperty(PROPERTY_AVAILABLE_VOTES) Long availableVotes,
                    @Nullable @JsonProperty(PROPERTY_LAST_VOTE_ATTEMPT) Instant lastVoteAttempt) {
         this.userId = userId;
         this.username = username;
         this.password = password;
         this.email = email;
         this.trackVotes = trackVotes;
+        this.availableVotes = availableVotes;
         this.lastVoteAttempt = lastVoteAttempt;
     }
 
@@ -55,6 +59,7 @@ public class UserDto {
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", trackVotes=" + trackVotes +
+                ", availableVotes=" + availableVotes +
                 ", lastVoteAttempt=" + lastVoteAttempt +
                 '}';
     }
@@ -84,6 +89,11 @@ public class UserDto {
         return trackVotes;
     }
 
+    @JsonProperty(PROPERTY_AVAILABLE_VOTES)
+    public Long getAvailableVotes() {
+        return availableVotes;
+    }
+
     @JsonProperty(PROPERTY_LAST_VOTE_ATTEMPT)
     public Instant getLastVoteAttempt() {
         return lastVoteAttempt;
@@ -98,13 +108,17 @@ public class UserDto {
             return false;
         }
         UserDto userDto = (UserDto) o;
-        return Objects.equals(userId, userDto.userId) && username.equals(userDto.username) && password.equals(userDto.password) &&
-                email.equals(userDto.email) && Objects.equals(trackVotes, userDto.trackVotes) && Objects.equals(lastVoteAttempt, userDto.lastVoteAttempt);
+        return Objects.equals(userId, userDto.userId) && username.equals(userDto.username) &&
+                password.equals(userDto.password) &&
+                email.equals(userDto.email) && Objects.equals(trackVotes, userDto.trackVotes) &&
+                availableVotes.equals(userDto.availableVotes) &&
+                Objects.equals(lastVoteAttempt, userDto.lastVoteAttempt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, username, password, email, trackVotes, lastVoteAttempt);
+        return Objects.hash(userId, username, password, email,
+                trackVotes, availableVotes, lastVoteAttempt);
     }
 
 }
