@@ -56,8 +56,9 @@ public class VoteServiceImpl implements VoteService {
         String trackId = vote.getId();
         Long votes = vote.getVotes();
 
+        Update postVotesUpdate = createUpdatePostVotes(trackId, votes);
         TrackEntity updatedTrack = trackRepository.vote(trackId, votes);
-        UserEntity updatedUser = userRepository.updateVotes(user.getId(), trackId, votes);
+        UserEntity updatedUser = userRepository.updateUser(user.getId(), postVotesUpdate);
 
         LOG.info("Track and User entities updated");
 
@@ -71,7 +72,7 @@ public class VoteServiceImpl implements VoteService {
         Instant lastVoteDay = user.getLastVoteAttempt().truncatedTo(ChronoUnit.DAYS);
 
         if (today.isAfter(lastVoteDay)) {
-            userVotes += ChronoUnit.DAYS.between(today, lastVoteDay) * 1000;
+            userVotes += Math.abs(ChronoUnit.DAYS.between(lastVoteDay, today)) * 1000;
             userRepository.updateUser(user.getId(), createAvailableVotesUpdate(userVotes));
         }
 
@@ -81,16 +82,24 @@ public class VoteServiceImpl implements VoteService {
     // Update User's available votes
     private Update createAvailableVotesUpdate(Long availableVotes) {
         return UpdateBuilder.create()
-                //.setAvailableVotes(availableVotes)
+                .setAvailableVotes(availableVotes)
                 .setLastVoteAttempt(Instant.now().truncatedTo(ChronoUnit.DAYS))
                 .build()
                 .orElseThrow(() -> new RuntimeException("Error creating User Update for Available votes"));
     }
 
+    private Update createUpdatePostVotes(String trackId, Long submittedVotes) {
+        return UpdateBuilder.create()
+                .decrementAvailableVotes(submittedVotes)
+                .incrementTrackVotes(trackId, submittedVotes)
+                .build()
+                .orElseThrow(() -> new RuntimeException("Error creating User Update post voting"));
+    }
+
     private UserEntity findUserFromToken(String authHeader) {
         String userEmail = tokenReader.getUserEmail(authHeader.split(" ")[1]);
 
-        return userRepository.findByEmail(userEmail)
+        return userRepository.findByEmailNoCache(userEmail)
                 .orElseThrow(() -> new UserEmailNotFoundException(userEmail));
     }
 

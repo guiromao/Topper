@@ -264,11 +264,11 @@ public class UserEntity implements Serializable {
         }
 
         public Optional<Update> build() {
-            if (!update.equals(new Update())) {
-                Optional.of(update);
+            if (update.equals(new Update())) {
+                return Optional.empty();
             }
 
-            return Optional.empty();
+            return Optional.of(update);
         }
 
     }
