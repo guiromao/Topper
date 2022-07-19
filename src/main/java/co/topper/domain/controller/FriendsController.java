@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,34 +26,34 @@ public class FriendsController {
         this.friendService = friendService;
     }
 
-    @GetMapping("/{userId}")
-    public FriendDto getFriend(@PathVariable("userId") String userId,
+    @GetMapping
+    public FriendDto getFriend(@RequestHeader("Authorization") String authHeader,
                                @RequestParam("friendId") String friendId) {
-        return friendService.getFriend(userId, friendId);
+        return friendService.getFriend(authHeader, friendId);
     }
 
-    @PostMapping("/request/{userId}")
-    public void sendRequest(@PathVariable("userId") String userId,
+    @PostMapping("/request")
+    public void sendRequest(@RequestHeader("Authorization") String authHeader,
                             @RequestParam("friendId") String friendId) {
-        friendService.sendRequest(userId, friendId);
+        friendService.sendRequest(authHeader, friendId);
     }
 
-    @PutMapping("/request/{userId}")
-    public void acceptRequest(@PathVariable("userId") String userId,
+    @PutMapping("/request")
+    public void acceptRequest(@RequestHeader("Authorization") String authHeader,
                               @RequestParam("friendId") String friendId) {
-        friendService.acceptRequest(userId, friendId);
+        friendService.acceptRequest(authHeader, friendId);
     }
 
-    @DeleteMapping("request/{userId}")
-    public void refuseRequest(@PathVariable("userId") String userId,
+    @DeleteMapping("/request")
+    public void refuseRequest(@RequestHeader("Authorization") String authHeader,
                               @RequestParam("friendId") String friendId) {
-        friendService.refuseRequest(userId, friendId);
+        friendService.refuseRequest(authHeader, friendId);
     }
 
-    @DeleteMapping("/{userId}")
-    public void deleteFriend(@PathVariable("userId") String userId,
+    @DeleteMapping
+    public void deleteFriend(@RequestHeader("Authorization") String authHeader,
                              @RequestParam("friendId") String friendId) {
-        friendService.unfriend(userId, friendId);
+        friendService.unfriend(authHeader, friendId);
     }
 
 }

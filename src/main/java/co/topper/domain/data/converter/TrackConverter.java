@@ -1,6 +1,5 @@
 package co.topper.domain.data.converter;
 
-import co.topper.domain.data.dto.ArtistDto;
 import co.topper.domain.data.dto.TopDto;
 import co.topper.domain.data.dto.TrackDto;
 import co.topper.domain.data.entity.AlbumEntity;
@@ -48,7 +47,7 @@ public class TrackConverter {
         );
     }
 
-    public List<TopDto> toDtoList(List<TrackEntity> tracks,
+    public List<TopDto> toTopDtoList(List<TrackEntity> tracks,
                                   List<AlbumEntity> albums,
                                   List<ArtistEntity> artists,
                                   Map<String, Long> trackVotes) {

@@ -5,10 +5,13 @@ import co.topper.domain.exception.EmptySearchTextException;
 import co.topper.domain.exception.FriendRequestNotFoundException;
 import co.topper.domain.exception.InvalidArgumentsException;
 import co.topper.domain.exception.NotEnoughAvailableVotesException;
+import co.topper.domain.exception.NotFriendsConnectionException;
+import co.topper.domain.exception.RequestAlreadySentException;
 import co.topper.domain.exception.TailoredResponse;
 import co.topper.domain.exception.ResourceNotFoundException;
 import co.topper.domain.exception.TokenReadException;
 import co.topper.domain.exception.UserAlreadyExistingException;
+import co.topper.domain.exception.UserAlreadyFriendsException;
 import co.topper.domain.exception.UserEmailNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +40,8 @@ public class TopperControllerAdvice {
 
     @ExceptionHandler({UserAlreadyExistingException.class, EmptySearchTextException.class,
             InvalidArgumentsException.class, TokenReadException.class,
-            NotEnoughAvailableVotesException.class})
+            NotEnoughAvailableVotesException.class, NotFriendsConnectionException.class,
+            RequestAlreadySentException.class, UserAlreadyFriendsException.class})
     public ResponseEntity<Object> handleBadRequest(Exception ex) {
         TailoredResponse response = TailoredResponse.of(HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(), ex.getMessage());

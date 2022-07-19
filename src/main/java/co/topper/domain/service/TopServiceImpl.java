@@ -51,7 +51,7 @@ public class TopServiceImpl implements TopService {
         List<AlbumEntity> albums = fetchAlbums(extractAlbumIds(tracks));
         List<ArtistEntity> artists = fetchArtists(extractArtistIds(tracks));
 
-        return trackConverter.toDtoList(tracks, albums, artists, null);
+        return trackConverter.toTopDtoList(tracks, albums, artists, null);
     }
 
     private List<AlbumEntity> fetchAlbums(Set<String> albumIds) {

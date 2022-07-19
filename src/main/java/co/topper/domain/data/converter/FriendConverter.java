@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @Component
 public class FriendConverter {
@@ -28,7 +27,7 @@ public class FriendConverter {
         return new FriendDto(
             user.getId(),
             user.getUsername(),
-            trackConverter.toDtoList(tracks,
+            trackConverter.toTopDtoList(tracks,
                     albums,
                     artists,
                     trackVotes)

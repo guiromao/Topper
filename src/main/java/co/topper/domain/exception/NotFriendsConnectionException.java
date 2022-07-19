@@ -2,8 +2,8 @@ package co.topper.domain.exception;
 
 public class NotFriendsConnectionException extends RuntimeException {
 
-    public NotFriendsConnectionException(String... userIds) {
-        super("Exception: not friends: " + userIds);
+    public NotFriendsConnectionException(String id) {
+        super(String.format("Exception: not friends with user ID %s", id));
     }
 
 }

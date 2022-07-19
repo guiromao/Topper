@@ -85,7 +85,7 @@ public class UserEntity implements Serializable {
         this.requestsReceivedIds = requestsReceivedIds;
         this.trackVotes = trackVotes;
         this.availableVotes = availableVotes;
-        this.lastVoteAttempt = lastVoteAttempt.truncatedTo(ChronoUnit.DAYS);
+        this.lastVoteAttempt = lastVoteAttempt;
         this.roles = roles;
     }
 
@@ -117,7 +117,7 @@ public class UserEntity implements Serializable {
         final Set<String> requestsReceivedIds = new HashSet<>();
         final Map<String, Long> votesMap = new HashMap<>();
         final Long availableVotes = 1000L;
-        final Instant firstLogin = Instant.now();
+        final Instant firstLogin = Instant.now().truncatedTo(ChronoUnit.DAYS);
         final Set<Role> roles = Set.of(Role.USER);
 
         return new UserEntity(id, username, password, email,

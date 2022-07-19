@@ -12,6 +12,7 @@ import co.topper.domain.exception.NotFriendsConnectionException;
 import co.topper.domain.exception.RequestAlreadySentException;
 import co.topper.domain.exception.ResourceNotFoundException;
 import co.topper.domain.exception.UserAlreadyFriendsException;
+import co.topper.domain.exception.UserEmailNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
@@ -29,56 +30,63 @@ public class FriendServiceImpl implements FriendService {
     private final DataManager dataManager;
     private final UserRepository userRepository;
     private final FriendConverter friendConverter;
+    private final TokenReader tokenReader;
 
     @Autowired
     public FriendServiceImpl(DataManager dataManager,
                              UserRepository userRepository,
-                             FriendConverter friendConverter) {
+                             FriendConverter friendConverter,
+                             TokenReader tokenReader) {
         this.dataManager = dataManager;
         this.userRepository = userRepository;
         this.friendConverter = friendConverter;
+        this.tokenReader = tokenReader;
     }
 
 
     @Override
-    public void sendRequest(String userId, String friendId) {
-        UserEntity possibleFriend = fetchUser(friendId);
+    public void sendRequest(String authHeader, String friendId) {
+        UserEntity user = fetchUserByToken(authHeader.split(" ")[1]);
+        UserEntity possibleFriend = fetchUserById(friendId);
 
-        if (possibleFriend.getRequestsReceivedIds().contains(userId)) {
+        if (possibleFriend.getRequestsReceivedIds().contains(user.getId())) {
             throw new RequestAlreadySentException(friendId);
         }
 
-        if (possibleFriend.getFriendsListIds().contains(userId)) {
+        if (possibleFriend.getFriendsListIds().contains(user.getId())) {
             throw new UserAlreadyFriendsException(friendId);
         }
 
-        userRepository.updateUser(friendId, new Update().push(KEY_REQUEST_IDS, userId));
+        userRepository.updateUser(friendId, new Update().push(KEY_REQUEST_IDS, user.getId()));
     }
 
     @Override
-    public void acceptRequest(String userId, String friendId) {
-        userRepository.updateUser(userId, new Update().pull(KEY_REQUEST_IDS, friendId));
-        userRepository.updateUser(userId, new Update().push(KEY_FRIENDS, friendId));
-        userRepository.updateUser(friendId, new Update().push(KEY_FRIENDS, userId));
+    public void acceptRequest(String authHeader, String friendId) {
+        UserEntity user = fetchUserByToken(authHeader.split(" ")[1]);
+
+        userRepository.updateUser(user.getId(), new Update().pull(KEY_REQUEST_IDS, friendId));
+        userRepository.updateUser(user.getId(), new Update().push(KEY_FRIENDS, friendId));
+        userRepository.updateUser(friendId, new Update().push(KEY_FRIENDS, user.getId()));
     }
 
     @Override
-    public void refuseRequest(String userId, String senderId) {
-        UserEntity user = fetchUser(userId);
+    public void refuseRequest(String authHeader, String senderId) {
+        UserEntity user = fetchUserByToken(authHeader.split(" ")[1]);
 
         if (!user.getRequestsReceivedIds().contains(senderId)) {
             throw new FriendRequestNotFoundException(senderId);
         }
 
-        userRepository.updateUser(userId, new Update().pull(KEY_REQUEST_IDS, senderId));
+        userRepository.updateUser(user.getId(), new Update().pull(KEY_REQUEST_IDS, senderId));
     }
 
     @Override
-    public FriendDto getFriend(String userId, String friendId) {
-        UserEntity friend = fetchUser(friendId);
+    public FriendDto getFriend(String authHeader, String friendId) {
+        UserEntity user = fetchUserByToken(authHeader.split(" ")[1]);
+        UserEntity friend = fetchUserById(friendId);
 
-        if (!friend.getFriendsListIds().contains(userId)) {
-            throw new NotFriendsConnectionException(userId);
+        if (!friend.getFriendsListIds().contains(user.getId())) {
+            throw new NotFriendsConnectionException(friendId);
         }
 
         List<TrackEntity> friendTracks = dataManager.getTracks(extractTrackIds(friend));
@@ -93,22 +101,29 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public void unfriend(String userId, String friendId) {
-        UserEntity user = fetchUser(userId);
-        UserEntity friend = fetchUser(friendId);
+    public void unfriend(String authHeader, String friendId) {
+        UserEntity user = fetchUserByToken(authHeader.split(" ")[1]);
+        UserEntity friend = fetchUserById(friendId);
 
         if (!user.getFriendsListIds().contains(friendId) ||
-                !friend.getFriendsListIds().contains(userId)) {
-            throw new NotFriendsConnectionException(userId, friendId);
+                !friend.getFriendsListIds().contains(user.getId())) {
+            throw new NotFriendsConnectionException(friendId);
         }
 
-        userRepository.updateUser(userId, new Update().pull(KEY_FRIENDS, friendId));
-        userRepository.updateUser(friendId, new Update().pull(KEY_FRIENDS, userId));
+        userRepository.updateUser(user.getId(), new Update().pull(KEY_FRIENDS, friendId));
+        userRepository.updateUser(friendId, new Update().pull(KEY_FRIENDS, user.getId()));
     }
 
-    private UserEntity fetchUser(String userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException(userId, UserEntity.class));
+    private UserEntity fetchUserByToken(String token) {
+        String userEmail = tokenReader.getUserEmail(token);
+
+        return userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new UserEmailNotFoundException(userEmail));
+    }
+
+    private UserEntity fetchUserById(String id) {
+       return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(id, UserEntity.class));
     }
 
     private List<String> extractTrackIds(UserEntity user) {
