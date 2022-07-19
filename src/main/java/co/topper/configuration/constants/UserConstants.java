@@ -21,4 +21,8 @@ public final class UserConstants {
     public static final String PROPERTY_TRACK_VOTES = FIELD_TRACK_VOTES;
     public static final String PROPERTY_LAST_VOTE_ATTEMPT = FIELD_LAST_VOTE_ATTEMPT;
 
+    private UserConstants() {
+
+    }
+
 }

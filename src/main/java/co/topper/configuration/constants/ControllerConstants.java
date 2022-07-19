@@ -7,4 +7,8 @@ public final class ControllerConstants {
     public static final String VOTE = "/vote";
     public static final String USER = "/user";
 
+    private ControllerConstants() {
+
+    }
+
 }

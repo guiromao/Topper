@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
+import static co.topper.configuration.constants.PlatformConstants.*;
+
 @Service
 public class VoteServiceImpl implements VoteService {
 
@@ -72,7 +74,7 @@ public class VoteServiceImpl implements VoteService {
         Instant lastVoteDay = user.getLastVoteAttempt().truncatedTo(ChronoUnit.DAYS);
 
         if (today.isAfter(lastVoteDay)) {
-            userVotes += Math.abs(ChronoUnit.DAYS.between(lastVoteDay, today)) * 1000;
+            userVotes += Math.abs(ChronoUnit.DAYS.between(lastVoteDay, today)) * DAILY_VOTES_VALUE;
             userRepository.updateUser(user.getId(), createAvailableVotesUpdate(userVotes));
         }
 
@@ -83,11 +85,12 @@ public class VoteServiceImpl implements VoteService {
     private Update createAvailableVotesUpdate(Long availableVotes) {
         return UpdateBuilder.create()
                 .setAvailableVotes(availableVotes)
-                .setLastVoteAttempt(Instant.now().truncatedTo(ChronoUnit.DAYS))
+                .setLastVoteAttempt(Instant.now())
                 .build()
                 .orElseThrow(() -> new RuntimeException("Error creating User Update for Available votes"));
     }
 
+    // Update for UserEntity's vote counts updates
     private Update createUpdatePostVotes(String trackId, Long submittedVotes) {
         return UpdateBuilder.create()
                 .decrementAvailableVotes(submittedVotes)
