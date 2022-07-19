@@ -64,7 +64,11 @@ public class FriendServiceImpl implements FriendService {
     public void acceptRequest(String authHeader, String friendId) {
         UserEntity user = fetchUserByToken(authHeader.split(" ")[1]);
 
+        // In case both sent requests, attempts to remove both ID's from requests lists are done
         userRepository.updateUser(user.getId(), new Update().pull(KEY_REQUEST_IDS, friendId));
+        userRepository.updateUser(friendId, new Update().pull(KEY_REQUEST_IDS, user.getId()));
+
+        // Add friend ID's to friends-list of both
         userRepository.updateUser(user.getId(), new Update().push(KEY_FRIENDS, friendId));
         userRepository.updateUser(friendId, new Update().push(KEY_FRIENDS, user.getId()));
     }
