@@ -1,7 +1,6 @@
 package co.topper.domain.scheduler;
 
 import co.topper.configuration.TrendyTermsConfiguration;
-import co.topper.domain.data.converter.TrackConverter;
 import co.topper.domain.data.dto.ArtistDto;
 import co.topper.domain.data.dto.TrackDto;
 import co.topper.domain.data.entity.TrackEntity;
@@ -20,25 +19,25 @@ import java.util.stream.Collectors;
 public class TrackOfTheHourScheduler {
 
     private static final int HOURS_IN_MILLISECONDS = 1000 * 60 * 60;
-    private static final int NUMBER_OF_HOURS = 1;
+    private static final int NUMBER_OF_HOUR = 1;
 
     private final MusicSearchService searchService;
     private final TrackRepository trackRepository;
     private final DataManager dataManager;
-    private final TrackConverter trackConverter;
+    private final Random random;
 
     public TrackOfTheHourScheduler(MusicSearchService searchService,
                                    TrackRepository trackRepository,
                                    DataManager dataManager,
-                                   TrackConverter trackConverter) {
+                                   Random random) {
         this.searchService = searchService;
         this.trackRepository = trackRepository;
         this.dataManager = dataManager;
-        this.trackConverter = trackConverter;
+        this.random = random;
     }
 
-    @Scheduled(fixedRate = HOURS_IN_MILLISECONDS * NUMBER_OF_HOURS)
-    public void selectRandomTopTrack() {
+    @Scheduled(fixedRate = HOURS_IN_MILLISECONDS * NUMBER_OF_HOUR)
+    public void saveRandomTopTrack() {
         final String searchTerm = pickTerm();
         TrackDto trackDto = getTrack(searchTerm);
 
@@ -61,22 +60,16 @@ public class TrackOfTheHourScheduler {
 
     private TrackDto getTrack(String term) {
         List<TrackDto> trackOptions = searchService.searchTracks(term).stream().toList();
-        int randomIndex = generateRandom(trackOptions.size());
+        int randomIndex = random.nextInt(trackOptions.size());
 
         return trackOptions.get(randomIndex);
     }
 
     private String pickTerm() {
         List<String> trendyTerms = TrendyTermsConfiguration.getTrendyTerms();
-        int randomIndex = generateRandom(trendyTerms.size());
+        int randomIndex = random.nextInt(trendyTerms.size());
 
         return trendyTerms.get(randomIndex);
-    }
-
-    private int generateRandom(int limit) {
-        Random random = new Random();
-
-        return random.nextInt(limit);
     }
 
 }
