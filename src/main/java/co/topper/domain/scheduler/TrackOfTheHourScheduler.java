@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 @Component
 public class TrackOfTheHourScheduler {
 
-    private static final int HOURS_IN_MILLISECONDS = 1000 * 60 * 60;
-    private static final int NUMBER_OF_HOUR = 1;
+    private static final int HOUR_IN_MILLISECONDS = 1000 * 60 * 60;
+    private static final int NUMBER_OF_HOURS = 1;
 
     private final MusicSearchService searchService;
     private final TrackRepository trackRepository;
@@ -36,7 +36,7 @@ public class TrackOfTheHourScheduler {
         this.random = random;
     }
 
-    @Scheduled(fixedRate = HOURS_IN_MILLISECONDS * NUMBER_OF_HOUR)
+    @Scheduled(fixedRate = HOUR_IN_MILLISECONDS * NUMBER_OF_HOURS)
     public void saveRandomTopTrack() {
         final String searchTerm = pickTerm();
         TrackDto trackDto = getTrack(searchTerm);
