@@ -16,6 +16,7 @@ import java.util.Set;
 public class TrackEntity {
 
     public static final String TRACK_COLLECTION = "track";
+    public static final String TRACK_OF_THE_HOUR = "track-of-the-hour";
 
     private static final String FIELD_NAME = "name";
     private static final String FIELD_ARTIST_IDS = "artistIds";
@@ -51,6 +52,10 @@ public class TrackEntity {
 
     public static TrackEntity create(String id, String name, Set<String> artistIds, String albumId) {
         return new TrackEntity(id, name, artistIds, albumId, 0L);
+    }
+
+    public static TrackEntity createTrackOfTheHour(String name, Set<String> artistsIds, String albumId) {
+        return new TrackEntity(TRACK_OF_THE_HOUR, name, artistsIds, albumId, null);
     }
 
     @Override

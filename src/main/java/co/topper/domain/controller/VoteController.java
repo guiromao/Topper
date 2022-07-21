@@ -1,9 +1,12 @@
 package co.topper.domain.controller;
 
 import co.topper.domain.data.dto.SuccessVoteDto;
+import co.topper.domain.data.dto.TrackDto;
 import co.topper.domain.data.dto.VoteDto;
+import co.topper.domain.service.TrackOfTheHourService;
 import co.topper.domain.service.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;

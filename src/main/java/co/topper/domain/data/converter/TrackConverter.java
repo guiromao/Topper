@@ -1,5 +1,6 @@
 package co.topper.domain.data.converter;
 
+import co.topper.domain.data.dto.ArtistDto;
 import co.topper.domain.data.dto.TopDto;
 import co.topper.domain.data.dto.TrackDto;
 import co.topper.domain.data.entity.AlbumEntity;
@@ -70,4 +71,30 @@ public class TrackConverter {
 
     }
 
+    public TrackEntity toEntity(TrackDto dto) {
+        return new TrackEntity(
+                dto.getId(),
+                dto.getName(),
+                Objects.nonNull(dto.getArtists()) ?
+                        dto.getArtists().stream()
+                                .map(ArtistDto::getArtistId)
+                                .collect(Collectors.toSet())
+                        : null,
+                Objects.nonNull(dto.getAlbum()) ?
+                        dto.getAlbum().getId()
+                        : null,
+                null
+        );
+    }
+
+    public TrackDto toDtoOfTheHour(TrackEntity track, AlbumEntity album, List<ArtistEntity> artists) {
+        return new TrackDto(
+                track.getId(),
+                track.getName(),
+                artists.stream()
+                        .map(artistConverter::toDto)
+                        .collect(Collectors.toSet()),
+                albumConverter.toDto(album)
+        );
+    }
 }

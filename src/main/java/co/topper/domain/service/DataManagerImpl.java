@@ -36,10 +36,10 @@ public class DataManagerImpl implements DataManager {
     }
 
     @Override
-    public void handleDataOf(VoteDto voteDto) {
-        handleTrack(voteDto);
-        handleAlbum(voteDto.getAlbum());
-        handleArtists(voteDto.getArtists());
+    public void handleDataOf(TrackDto trackDto) {
+        handleTrack(trackDto);
+        handleAlbum(trackDto.getAlbum());
+        handleArtists(trackDto.getArtists());
     }
 
     @Override

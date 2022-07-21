@@ -4,7 +4,6 @@ import co.topper.domain.data.entity.TrackEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -12,6 +11,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
 import java.util.List;
+import java.util.Optional;
 
 public class TrackRepositoryCustomImpl implements TrackRepositoryCustom {
 
@@ -36,8 +36,16 @@ public class TrackRepositoryCustomImpl implements TrackRepositoryCustom {
     @Override
     public List<TrackEntity> getTop(Pageable page) {
         return mongoTemplate.find(
-                new Query().with(Sort.by(Direction.DESC, KEY_VOTES)).with(page),
+                new Query(Criteria.where(KEY_ID).ne(TrackEntity.TRACK_OF_THE_HOUR))
+                        .with(Sort.by(Direction.DESC, KEY_VOTES)).with(page),
                 TrackEntity.class
         );
     }
+
+    @Override
+    public Optional<TrackEntity> getTrackOfTheHour() {
+        return Optional.ofNullable(mongoTemplate.findOne(Query.query(Criteria.where(KEY_ID).is(TrackEntity.TRACK_OF_THE_HOUR)),
+                TrackEntity.class));
+    }
+
 }

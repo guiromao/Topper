@@ -67,4 +67,14 @@ public class AlbumConverter {
                 .findFirst()
                 .orElse(null);
     }
+
+    public AlbumDto toDto(AlbumEntity album) {
+        return new AlbumDto(
+                album.getId(),
+                album.getName(),
+                album.getArtistIds(),
+                album.getReleaseDate()
+        );
+    }
+
 }

@@ -58,4 +58,12 @@ public class ArtistConverter {
                 .filter(artist -> track.getArtistIds().contains(artist.getId()))
                 .collect(Collectors.toSet());
     }
+
+    public ArtistDto toDto(ArtistEntity artist) {
+        return new ArtistDto(
+                artist.getId(),
+                artist.getName()
+        );
+    }
+
 }

@@ -3,6 +3,8 @@ package co.topper.domain.service;
 import co.topper.domain.data.dto.AlbumDto;
 import co.topper.domain.data.dto.ArtistDto;
 import co.topper.domain.data.dto.TrackDto;
+import se.michaelthelin.spotify.model_objects.specification.Paging;
+import se.michaelthelin.spotify.model_objects.specification.Track;
 
 import java.util.Set;
 
