@@ -87,7 +87,7 @@ public class TrackConverter {
         );
     }
 
-    public TrackDto toDtoOfTheHour(TrackEntity track, AlbumEntity album, List<ArtistEntity> artists) {
+    public TrackDto toFeaturedDto(TrackEntity track, AlbumEntity album, List<ArtistEntity> artists) {
         return new TrackDto(
                 track.getId(),
                 track.getName(),

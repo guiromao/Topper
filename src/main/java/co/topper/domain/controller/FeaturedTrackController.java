@@ -2,7 +2,7 @@ package co.topper.domain.controller;
 
 import co.topper.configuration.constants.ControllerConstants;
 import co.topper.domain.data.dto.TrackDto;
-import co.topper.domain.service.TrackOfTheHourService;
+import co.topper.domain.service.FeaturedTrackService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,18 +10,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(ControllerConstants.APP + ControllerConstants.VERSION + "/hour")
-public class TrackOfTheHourController {
+public class FeaturedTrackController {
 
-    private final TrackOfTheHourService trackOfTheHourService;
+    private final FeaturedTrackService featuredTrackService;
 
     @Autowired
-    public TrackOfTheHourController(TrackOfTheHourService service) {
-        this.trackOfTheHourService = service;
+    public FeaturedTrackController(FeaturedTrackService service) {
+        this.featuredTrackService = service;
     }
 
     @GetMapping
     public TrackDto getTrackOfTheHour() {
-        return trackOfTheHourService.getTrackOfTheHour();
+        return featuredTrackService.getFeaturedTrack();
     }
 
 }

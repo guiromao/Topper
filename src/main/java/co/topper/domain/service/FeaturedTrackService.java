@@ -2,8 +2,8 @@ package co.topper.domain.service;
 
 import co.topper.domain.data.dto.TrackDto;
 
-public interface TrackOfTheHourService {
+public interface FeaturedTrackService {
 
-    TrackDto getTrackOfTheHour();
+    TrackDto getFeaturedTrack();
 
 }

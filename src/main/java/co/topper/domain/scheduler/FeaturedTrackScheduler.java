@@ -16,7 +16,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 @Component
-public class TrackOfTheHourScheduler {
+public class FeaturedTrackScheduler {
 
     private static final int HOUR_IN_MILLISECONDS = 1000 * 60 * 60;
     private static final int NUMBER_OF_HOURS = 1;
@@ -26,10 +26,10 @@ public class TrackOfTheHourScheduler {
     private final DataManager dataManager;
     private final Random random;
 
-    public TrackOfTheHourScheduler(MusicSearchService searchService,
-                                   TrackRepository trackRepository,
-                                   DataManager dataManager,
-                                   Random random) {
+    public FeaturedTrackScheduler(MusicSearchService searchService,
+                                  TrackRepository trackRepository,
+                                  DataManager dataManager,
+                                  Random random) {
         this.searchService = searchService;
         this.trackRepository = trackRepository;
         this.dataManager = dataManager;

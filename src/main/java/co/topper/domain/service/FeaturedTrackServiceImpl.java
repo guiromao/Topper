@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-public class TrackOfTheHourServiceImpl implements  TrackOfTheHourService {
+public class FeaturedTrackServiceImpl implements FeaturedTrackService {
 
     private final TrackRepository trackRepository;
     private final AlbumRepository albumRepository;
@@ -24,10 +24,10 @@ public class TrackOfTheHourServiceImpl implements  TrackOfTheHourService {
     private final TrackConverter trackConverter;
 
     @Autowired
-    public TrackOfTheHourServiceImpl(TrackRepository trackRepository,
-                                     AlbumRepository albumRepository,
-                                     ArtistRepository artistRepository,
-                                     TrackConverter trackConverter) {
+    public FeaturedTrackServiceImpl(TrackRepository trackRepository,
+                                    AlbumRepository albumRepository,
+                                    ArtistRepository artistRepository,
+                                    TrackConverter trackConverter) {
         this.trackRepository = trackRepository;
         this.albumRepository = albumRepository;
         this.artistRepository = artistRepository;
@@ -35,9 +35,9 @@ public class TrackOfTheHourServiceImpl implements  TrackOfTheHourService {
     }
 
     @Override
-    public TrackDto getTrackOfTheHour() {
-        TrackEntity track = trackRepository.findById(TrackEntity.TRACK_OF_THE_HOUR)
-                .orElseThrow(() -> new ResourceNotFoundException(TrackEntity.TRACK_OF_THE_HOUR, TrackEntity.class));
+    public TrackDto getFeaturedTrack() {
+        TrackEntity track = trackRepository.getFeaturedTrack()
+                .orElseThrow(() -> new ResourceNotFoundException(TrackEntity.FEATURED_TRACK_ID, TrackEntity.class));
 
         AlbumEntity album = Objects.nonNull(track.getAlbumId()) ?
                 albumRepository.findById(track.getAlbumId())
@@ -46,7 +46,7 @@ public class TrackOfTheHourServiceImpl implements  TrackOfTheHourService {
 
         List<ArtistEntity> artists = (List<ArtistEntity>) artistRepository.findAllById(track.getArtistIds());
 
-        return trackConverter.toDtoOfTheHour(track, album, artists);
+        return trackConverter.toFeaturedDto(track, album, artists);
     }
 
 }

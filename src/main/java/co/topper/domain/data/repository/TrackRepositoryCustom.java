@@ -12,6 +12,6 @@ public interface TrackRepositoryCustom {
 
     List<TrackEntity> getTop(Pageable page);
 
-    Optional<TrackEntity> getTrackOfTheHour();
+    Optional<TrackEntity> getFeaturedTrack();
 
 }

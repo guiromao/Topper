@@ -36,15 +36,15 @@ public class TrackRepositoryCustomImpl implements TrackRepositoryCustom {
     @Override
     public List<TrackEntity> getTop(Pageable page) {
         return mongoTemplate.find(
-                new Query(Criteria.where(KEY_ID).ne(TrackEntity.TRACK_OF_THE_HOUR))
+                new Query(Criteria.where(KEY_ID).ne(TrackEntity.FEATURED_TRACK_ID))
                         .with(Sort.by(Direction.DESC, KEY_VOTES)).with(page),
                 TrackEntity.class
         );
     }
 
     @Override
-    public Optional<TrackEntity> getTrackOfTheHour() {
-        return Optional.ofNullable(mongoTemplate.findOne(Query.query(Criteria.where(KEY_ID).is(TrackEntity.TRACK_OF_THE_HOUR)),
+    public Optional<TrackEntity> getFeaturedTrack() {
+        return Optional.ofNullable(mongoTemplate.findOne(Query.query(Criteria.where(KEY_ID).is(TrackEntity.FEATURED_TRACK_ID)),
                 TrackEntity.class));
     }
 
