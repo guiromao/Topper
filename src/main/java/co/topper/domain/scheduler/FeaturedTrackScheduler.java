@@ -43,7 +43,8 @@ public class FeaturedTrackScheduler {
 
         dataManager.handleDataOf(trackDto);
 
-        TrackEntity track = TrackEntity.createTrackOfTheHour(
+        TrackEntity track = TrackEntity
+                .createFeaturedTrack(
                 trackDto.getName(),
                 Objects.nonNull(trackDto.getArtists()) ?
                         trackDto.getArtists().stream()

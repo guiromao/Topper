@@ -54,7 +54,7 @@ public class TrackEntity {
         return new TrackEntity(id, name, artistIds, albumId, 0L);
     }
 
-    public static TrackEntity createTrackOfTheHour(String name, Set<String> artistsIds, String albumId) {
+    public static TrackEntity createFeaturedTrack(String name, Set<String> artistsIds, String albumId) {
         return new TrackEntity(FEATURED_TRACK_ID, name, artistsIds, albumId, null);
     }
 

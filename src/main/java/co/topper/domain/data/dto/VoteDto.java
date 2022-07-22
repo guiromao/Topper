@@ -41,12 +41,16 @@ public class VoteDto extends TrackDto {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        if (!super.equals(o)) {
+            return false;
+        }
         VoteDto voteDto = (VoteDto) o;
         return votes.equals(voteDto.votes);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(votes);
+        return Objects.hash(super.hashCode(), votes);
     }
+
 }
