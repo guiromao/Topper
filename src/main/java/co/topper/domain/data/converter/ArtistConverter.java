@@ -49,6 +49,13 @@ public class ArtistConverter {
                 .collect(Collectors.toSet());
     }
 
+    public ArtistDto toDto(ArtistEntity artist) {
+        return new ArtistDto(
+                artist.getId(),
+                artist.getName()
+        );
+    }
+
     private Set<ArtistEntity> filterArtists(TrackEntity track, List<ArtistEntity> artists) {
         if (Objects.isNull(track.getArtistIds())) {
             return Collections.emptySet();
@@ -57,13 +64,6 @@ public class ArtistConverter {
         return artists.stream()
                 .filter(artist -> track.getArtistIds().contains(artist.getId()))
                 .collect(Collectors.toSet());
-    }
-
-    public ArtistDto toDto(ArtistEntity artist) {
-        return new ArtistDto(
-                artist.getId(),
-                artist.getName()
-        );
     }
 
 }
