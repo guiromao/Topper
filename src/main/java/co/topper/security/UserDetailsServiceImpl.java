@@ -21,11 +21,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        UserEntity user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserEmailNotFoundException(email));
+    public UserDetails loadUserByUsername(String emailId) throws UsernameNotFoundException {
+        UserEntity user = userRepository.findById(emailId)
+                .orElseThrow(() -> new UserEmailNotFoundException(emailId));
 
-        return new User(user.getEmail(), user.getPassword(), user.getRoles());
+        return new User(user.getEmailId(), user.getPassword(), user.getRoles());
     }
 
 }

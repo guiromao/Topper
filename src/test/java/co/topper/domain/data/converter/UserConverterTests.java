@@ -27,13 +27,12 @@ class UserConverterTests {
 
         UserDto test = userConverter.toDto(userVotedToday);
 
-        Assertions.assertEquals("user-1", test.getUserId());
+        Assertions.assertEquals("username@mail.com", test.getEmailId());
         Assertions.assertEquals("username", test.getUsername());
         Assertions.assertNull(test.getPassword());
-        Assertions.assertEquals("username@mail.com", test.getEmail());
         Assertions.assertEquals(Map.of("artist-1", 800L), test.getTrackVotes());
         Assertions.assertEquals(1000L, test.getAvailableVotes());
-        Assertions.assertEquals(NOW, test.getLastVoteAttempt());
+        Assertions.assertEquals(NOW, test.getLastVoteDate());
     }
 
     @Test
@@ -43,21 +42,19 @@ class UserConverterTests {
 
         UserDto test = userConverter.toDto(user);
 
-        Assertions.assertEquals("user-1", test.getUserId());
+        Assertions.assertEquals("username@mail.com", test.getEmailId());
         Assertions.assertEquals("username", test.getUsername());
         Assertions.assertNull(test.getPassword());
-        Assertions.assertEquals("username@mail.com", test.getEmail());
         Assertions.assertEquals(Map.of("artist-1", 800L), test.getTrackVotes());
         Assertions.assertEquals(3000L, test.getAvailableVotes());
-        Assertions.assertEquals(beforeDate, test.getLastVoteAttempt());
+        Assertions.assertEquals(beforeDate, test.getLastVoteDate());
     }
 
     private UserEntity userWithLastVoteAt(Instant instant) {
         return new UserEntity(
-            "user-1",
+            "username@mail.com",
             "username",
             "pass",
-            "username@mail.com",
             Set.of("friendId"),
             Set.of("requestId-1", "requestId-2"),
             Map.of("artist-1", 800L),

@@ -8,8 +8,8 @@ class UserDtoTests {
     @Test
     void testEquals() {
         EqualsVerifier.simple().forClass(UserDto.class)
-                .withNonnullFields("username", "password", "email",
-                        "availableVotes", "lastVoteAttempt")
+                .withNonnullFields("username", "password", "emailId",
+                        "availableVotes", "lastVoteDate")
                 .verify();
     }
 

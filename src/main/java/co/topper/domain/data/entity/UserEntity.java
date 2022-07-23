@@ -16,12 +16,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
 import static co.topper.configuration.constants.UserConstants.FIELD_AVAILABLE_VOTES;
-import static co.topper.configuration.constants.UserConstants.FIELD_EMAIL;
 import static co.topper.configuration.constants.UserConstants.FIELD_FRIENDS_LIST_IDS;
-import static co.topper.configuration.constants.UserConstants.FIELD_LAST_VOTE_ATTEMPT;
+import static co.topper.configuration.constants.UserConstants.FIELD_LAST_VOTE_DATE;
 import static co.topper.configuration.constants.UserConstants.FIELD_PASSWORD;
 import static co.topper.configuration.constants.UserConstants.FIELD_REQUESTS_RECEIVED;
 import static co.topper.configuration.constants.UserConstants.FIELD_ROLES;
@@ -37,17 +35,15 @@ public class UserEntity implements Serializable {
 
     public static final String USER_COLLECTION = "user";
 
+    // Having to be unique, 'email' field is also the ID of the User document
     @Id
-    private final String id;
+    private final String emailId;
 
     @Field(FIELD_USERNAME)
     private final String username;
 
     @Field(FIELD_PASSWORD)
     private final String password;
-
-    @Field(FIELD_EMAIL)
-    private final String email;
 
     @Field(FIELD_FRIENDS_LIST_IDS)
     private final Set<String> friendsListIds;
@@ -61,58 +57,54 @@ public class UserEntity implements Serializable {
     @Field(FIELD_AVAILABLE_VOTES)
     private final Long availableVotes;
 
-    @Field(FIELD_LAST_VOTE_ATTEMPT)
-    private final Instant lastVoteAttempt;
+    @Field(FIELD_LAST_VOTE_DATE)
+    private final Instant lastVoteDate;
 
     @Field(FIELD_ROLES)
     private final Set<Role> roles;
 
-    public UserEntity(String id,
+    public UserEntity(String emailId,
                       String username,
                       String password,
-                      String email,
                       Set<String> friendsListIds,
                       Set<String> requestsReceivedIds,
                       Map<String, Long> trackVotes,
                       Long availableVotes,
-                      Instant lastVoteAttempt,
+                      Instant lastVoteDate,
                       Set<Role> roles) {
-        this.id = id;
+        this.emailId = emailId;
         this.username = username;
         this.password = password;
-        this.email = email;
         this.friendsListIds = friendsListIds;
         this.requestsReceivedIds = requestsReceivedIds;
         this.trackVotes = trackVotes;
         this.availableVotes = availableVotes;
-        this.lastVoteAttempt = lastVoteAttempt;
+        this.lastVoteDate = lastVoteDate;
         this.roles = roles;
     }
 
     public UserEntity withPassword(String updatedPassword) {
-        return new UserEntity(this.id, this.username, updatedPassword,
-                this.email, this.friendsListIds, this.requestsReceivedIds, this.trackVotes,
-                this.availableVotes, this.lastVoteAttempt, this.roles);
+        return new UserEntity(this.emailId, this.username, updatedPassword,
+                this.friendsListIds, this.requestsReceivedIds, this.trackVotes,
+                this.availableVotes, this.lastVoteDate, this.roles);
     }
 
     @Override
     public String toString() {
         return "UserEntity{" +
-                "id='" + id + '\'' +
+                "emailId='" + emailId + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
                 ", friendsListIds=" + friendsListIds +
                 ", requestsReceivedIds=" + requestsReceivedIds +
                 ", trackVotes=" + trackVotes +
                 ", availableVotes=" + availableVotes +
-                ", lastVoteAttempt=" + lastVoteAttempt +
+                ", lastVoteDate=" + lastVoteDate +
                 ", roles=" + roles +
                 '}';
     }
 
-    public static UserEntity create(String username, String password, String email) {
-        final String id = UUID.randomUUID().toString();
+    public static UserEntity create(String email, String username, String password) {
         final Set<String> friendsListIds = new HashSet<>();
         final Set<String> requestsReceivedIds = new HashSet<>();
         final Map<String, Long> votesMap = new HashMap<>();
@@ -120,13 +112,13 @@ public class UserEntity implements Serializable {
         final Instant firstLogin = Instant.now().truncatedTo(ChronoUnit.DAYS);
         final Set<Role> roles = Set.of(Role.USER);
 
-        return new UserEntity(id, username, password, email,
+        return new UserEntity(email, username, password,
                 friendsListIds, requestsReceivedIds, votesMap,
                 availableVotes, firstLogin, roles);
     }
 
-    public String getId() {
-        return id;
+    public String getEmailId() {
+        return emailId;
     }
 
     public String getUsername() {
@@ -135,10 +127,6 @@ public class UserEntity implements Serializable {
 
     public String getPassword() {
         return password;
-    }
-
-    public String getEmail() {
-        return email;
     }
 
     public Set<String> getFriendsListIds() {
@@ -157,8 +145,8 @@ public class UserEntity implements Serializable {
         return availableVotes;
     }
 
-    public Instant getLastVoteAttempt() {
-        return lastVoteAttempt;
+    public Instant getLastVoteDate() {
+        return lastVoteDate;
     }
 
     public Set<Role> getRoles() {
@@ -174,22 +162,21 @@ public class UserEntity implements Serializable {
             return false;
         }
         UserEntity user = (UserEntity) o;
-        return id.equals(user.id) && username.equals(user.username)
+        return emailId.equals(user.emailId) && username.equals(user.username)
                 && password.equals(user.password) &&
-                email.equals(user.email) &&
                 friendsListIds.equals(user.friendsListIds) &&
                 requestsReceivedIds.equals(user.requestsReceivedIds) &&
                 trackVotes.equals(user.trackVotes) &&
                 availableVotes.equals(user.getAvailableVotes()) &&
-                lastVoteAttempt.equals(user.lastVoteAttempt) &&
+                lastVoteDate.equals(user.lastVoteDate) &&
                 Objects.equals(roles, user.roles);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, password, email,
+        return Objects.hash(emailId, username, password,
                 friendsListIds, requestsReceivedIds, trackVotes,
-                availableVotes, lastVoteAttempt, roles);
+                availableVotes, lastVoteDate, roles);
     }
 
     public static class UpdateBuilder {
@@ -214,8 +201,8 @@ public class UserEntity implements Serializable {
             return this;
         }
 
-        public UpdateBuilder setEmail(String email) {
-            set(FIELD_EMAIL, email);
+        public UpdateBuilder setEmailId(String email) {
+            set("_id", email);
             return this;
         }
 
@@ -234,13 +221,18 @@ public class UserEntity implements Serializable {
             return this;
         }
 
+        public UpdateBuilder incrementAvailableVotes(Long votes) {
+            update.inc(FIELD_AVAILABLE_VOTES, votes);
+            return this;
+        }
+
         public UpdateBuilder decrementAvailableVotes(Long votes) {
             update.inc(FIELD_AVAILABLE_VOTES, -votes);
             return this;
         }
 
-        public UpdateBuilder setLastVoteAttempt(Instant lastVoteAttempt) {
-            set(FIELD_LAST_VOTE_ATTEMPT, lastVoteAttempt.truncatedTo(ChronoUnit.DAYS));
+        public UpdateBuilder setLastVoteDate(Instant lastVoteDate) {
+            set(FIELD_LAST_VOTE_DATE, lastVoteDate.truncatedTo(ChronoUnit.DAYS));
             return this;
         }
 

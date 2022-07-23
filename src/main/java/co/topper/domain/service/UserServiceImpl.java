@@ -45,9 +45,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getUser(String userId) {
-        UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException(userId, UserEntity.class));
+    public UserDto getUser(String emailId) {
+        UserEntity user = userRepository.findById(emailId)
+                .orElseThrow(() -> new ResourceNotFoundException(emailId, UserEntity.class));
 
         // Hide password before sending the DTO
         user = user.withPassword(null);
@@ -58,31 +58,14 @@ public class UserServiceImpl implements UserService {
     private UserEntity fetchUser(UserDto userDto) {
         UserEntity user;
 
-        if (Objects.isNull(userDto.getUserId())) {
-            validate(userDto);
-            user = UserEntity.create(userDto.getUsername(), userDto.getPassword(), userDto.getEmail());
+        if (!userRepository.existsById(userDto.getEmailId())) {
+            user = UserEntity.create(userDto.getEmailId(), userDto.getUsername(), userDto.getPassword());
         } else {
-            user = userRepository.findById(userDto.getUserId())
-                    .orElseThrow(() -> new ResourceNotFoundException(userDto.getUserId(), UserEntity.class));
+            user = userRepository.findById(userDto.getEmailId())
+                    .orElseThrow(() -> new ResourceNotFoundException(userDto.getEmailId(), UserEntity.class));
         }
 
         return user;
-    }
-
-    private Update updateOf(UserEntity user) {
-        final UpdateBuilder updateBuilder = UpdateBuilder.create()
-                .setUsername(user.getUsername())
-                .setPassword(user.getPassword())
-                .setTrackVotes(user.getTrackVotes());
-
-        return updateBuilder.build()
-                .orElseThrow(() -> new RuntimeException("Error creating UserEntity Update"));
-    }
-
-    private void validate(UserDto dto) {
-        if (userRepository.existsByEmail(dto.getEmail())) {
-            throw new UserAlreadyExistingException("Email", dto.getEmail());
-        }
     }
 
 }

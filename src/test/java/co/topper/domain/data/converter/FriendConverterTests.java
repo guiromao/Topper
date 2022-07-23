@@ -34,7 +34,7 @@ class FriendConverterTests {
 
         List<TopDto> friendTracks = test.getLikedTracks();
 
-        assertEquals("user-1", test.getFriendId());
+        assertEquals("user@mail.com", test.getFriendId());
         assertEquals("username", test.getUsername());
         assertEquals("track-1", friendTracks.get(0).getId());
         assertEquals("artist-1", friendTracks.get(0).getArtists().iterator().next().getArtistId());
@@ -44,10 +44,9 @@ class FriendConverterTests {
 
     private UserEntity userEntity() {
         return new UserEntity(
-                "user-1",
+                "user@mail.com",
                 "username",
                 "pass",
-                "user@mail.com",
                 Set.of("1", "2"),
                 Set.of("3"),
                 totalTrackVotes(),

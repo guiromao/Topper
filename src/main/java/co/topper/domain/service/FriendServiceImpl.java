@@ -12,7 +12,6 @@ import co.topper.domain.exception.NotFriendsConnectionException;
 import co.topper.domain.exception.RequestAlreadySentException;
 import co.topper.domain.exception.ResourceNotFoundException;
 import co.topper.domain.exception.UserAlreadyFriendsException;
-import co.topper.domain.exception.UserEmailNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
@@ -49,15 +48,15 @@ public class FriendServiceImpl implements FriendService {
         UserEntity user = fetchUserByToken(authHeader.split(" ")[1]);
         UserEntity possibleFriend = fetchUserById(friendId);
 
-        if (possibleFriend.getRequestsReceivedIds().contains(user.getId())) {
+        if (possibleFriend.getRequestsReceivedIds().contains(user.getEmailId())) {
             throw new RequestAlreadySentException(friendId);
         }
 
-        if (possibleFriend.getFriendsListIds().contains(user.getId())) {
+        if (possibleFriend.getFriendsListIds().contains(user.getEmailId())) {
             throw new UserAlreadyFriendsException(friendId);
         }
 
-        userRepository.updateUser(friendId, new Update().push(KEY_REQUEST_IDS, user.getId()));
+        userRepository.updateUser(friendId, new Update().push(KEY_REQUEST_IDS, user.getEmailId()));
     }
 
     @Override
@@ -65,12 +64,12 @@ public class FriendServiceImpl implements FriendService {
         UserEntity user = fetchUserByToken(authHeader.split(" ")[1]);
 
         // In case both sent requests, attempts to remove both ID's from requests lists are done
-        userRepository.updateUser(user.getId(), new Update().pull(KEY_REQUEST_IDS, friendId));
-        userRepository.updateUser(friendId, new Update().pull(KEY_REQUEST_IDS, user.getId()));
+        userRepository.updateUser(user.getEmailId(), new Update().pull(KEY_REQUEST_IDS, friendId));
+        userRepository.updateUser(friendId, new Update().pull(KEY_REQUEST_IDS, user.getEmailId()));
 
         // Add friend ID's to friends-list of both
-        userRepository.updateUser(user.getId(), new Update().push(KEY_FRIENDS, friendId));
-        userRepository.updateUser(friendId, new Update().push(KEY_FRIENDS, user.getId()));
+        userRepository.updateUser(user.getEmailId(), new Update().push(KEY_FRIENDS, friendId));
+        userRepository.updateUser(friendId, new Update().push(KEY_FRIENDS, user.getEmailId()));
     }
 
     @Override
@@ -81,7 +80,7 @@ public class FriendServiceImpl implements FriendService {
             throw new FriendRequestNotFoundException(senderId);
         }
 
-        userRepository.updateUser(user.getId(), new Update().pull(KEY_REQUEST_IDS, senderId));
+        userRepository.updateUser(user.getEmailId(), new Update().pull(KEY_REQUEST_IDS, senderId));
     }
 
     @Override
@@ -89,7 +88,7 @@ public class FriendServiceImpl implements FriendService {
         UserEntity user = fetchUserByToken(authHeader.split(" ")[1]);
         UserEntity friend = fetchUserById(friendId);
 
-        if (!friend.getFriendsListIds().contains(user.getId())) {
+        if (!friend.getFriendsListIds().contains(user.getEmailId())) {
             throw new NotFriendsConnectionException(friendId);
         }
 
@@ -110,19 +109,18 @@ public class FriendServiceImpl implements FriendService {
         UserEntity friend = fetchUserById(friendId);
 
         if (!user.getFriendsListIds().contains(friendId) ||
-                !friend.getFriendsListIds().contains(user.getId())) {
+                !friend.getFriendsListIds().contains(user.getEmailId())) {
             throw new NotFriendsConnectionException(friendId);
         }
 
-        userRepository.updateUser(user.getId(), new Update().pull(KEY_FRIENDS, friendId));
-        userRepository.updateUser(friendId, new Update().pull(KEY_FRIENDS, user.getId()));
+        userRepository.updateUser(user.getEmailId(), new Update().pull(KEY_FRIENDS, friendId));
+        userRepository.updateUser(friendId, new Update().pull(KEY_FRIENDS, user.getEmailId()));
     }
 
     private UserEntity fetchUserByToken(String token) {
         String userEmail = tokenReader.getUserEmail(token);
 
-        return userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new UserEmailNotFoundException(userEmail));
+        return fetchUserById(userEmail);
     }
 
     private UserEntity fetchUserById(String id) {

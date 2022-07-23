@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.sun.istack.NotNull;
 import org.springframework.lang.Nullable;
 
 import java.time.Instant;
@@ -12,9 +13,8 @@ import java.util.Map;
 import java.util.Objects;
 
 import static co.topper.configuration.constants.UserConstants.PROPERTY_AVAILABLE_VOTES;
-import static co.topper.configuration.constants.UserConstants.PROPERTY_EMAIL;
 import static co.topper.configuration.constants.UserConstants.PROPERTY_ID;
-import static co.topper.configuration.constants.UserConstants.PROPERTY_LAST_VOTE_ATTEMPT;
+import static co.topper.configuration.constants.UserConstants.PROPERTY_LAST_VOTE_DATE;
 import static co.topper.configuration.constants.UserConstants.PROPERTY_PASSWORD;
 import static co.topper.configuration.constants.UserConstants.PROPERTY_TRACK_VOTES;
 import static co.topper.configuration.constants.UserConstants.PROPERTY_USERNAME;
@@ -26,47 +26,43 @@ import static co.topper.configuration.constants.UserConstants.PROPERTY_USERNAME;
         isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public class UserDto {
 
-    private final String userId;
+    private final String emailId;
     private final String username;
     private final String password;
-    private final String email;
     private final Map<String, Long> trackVotes;
     private final Long availableVotes;
-    private final Instant lastVoteAttempt;
+    private final Instant lastVoteDate;
 
     @JsonCreator
-    public UserDto(@Nullable @JsonProperty(PROPERTY_ID) String userId,
+    public UserDto(@NotNull @JsonProperty(PROPERTY_ID) String emailId,
                    @JsonProperty(PROPERTY_USERNAME) String username,
                    @JsonProperty(PROPERTY_PASSWORD) String password,
-                   @JsonProperty(PROPERTY_EMAIL) String email,
                    @Nullable @JsonProperty(PROPERTY_TRACK_VOTES) Map<String, Long> trackVotes,
                    @JsonProperty(PROPERTY_AVAILABLE_VOTES) Long availableVotes,
-                   @Nullable @JsonProperty(PROPERTY_LAST_VOTE_ATTEMPT) Instant lastVoteAttempt) {
-        this.userId = userId;
+                   @Nullable @JsonProperty(PROPERTY_LAST_VOTE_DATE) Instant lastVoteDate) {
+        this.emailId = emailId;
         this.username = username;
         this.password = password;
-        this.email = email;
         this.trackVotes = trackVotes;
         this.availableVotes = availableVotes;
-        this.lastVoteAttempt = lastVoteAttempt;
+        this.lastVoteDate = lastVoteDate;
     }
 
     @Override
     public String toString() {
         return "UserDto{" +
-                "userId='" + userId + '\'' +
+                "emailId='" + emailId + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
                 ", trackVotes=" + trackVotes +
                 ", availableVotes=" + availableVotes +
-                ", lastVoteAttempt=" + lastVoteAttempt +
+                ", lastVoteDate=" + lastVoteDate +
                 '}';
     }
 
     @JsonProperty(PROPERTY_ID)
-    public String getUserId() {
-        return userId;
+    public String getEmailId() {
+        return emailId;
     }
 
     @JsonProperty(PROPERTY_USERNAME)
@@ -79,11 +75,6 @@ public class UserDto {
         return password;
     }
 
-    @JsonProperty(PROPERTY_EMAIL)
-    public String getEmail() {
-        return email;
-    }
-
     @JsonProperty(PROPERTY_TRACK_VOTES)
     public Map<String, Long> getTrackVotes() {
         return trackVotes;
@@ -94,9 +85,9 @@ public class UserDto {
         return availableVotes;
     }
 
-    @JsonProperty(PROPERTY_LAST_VOTE_ATTEMPT)
-    public Instant getLastVoteAttempt() {
-        return lastVoteAttempt;
+    @JsonProperty(PROPERTY_LAST_VOTE_DATE)
+    public Instant getLastVoteDate() {
+        return lastVoteDate;
     }
 
     @Override
@@ -108,17 +99,17 @@ public class UserDto {
             return false;
         }
         UserDto userDto = (UserDto) o;
-        return Objects.equals(userId, userDto.userId) && username.equals(userDto.username) &&
+        return Objects.equals(emailId, userDto.emailId) && username.equals(userDto.username) &&
                 password.equals(userDto.password) &&
-                email.equals(userDto.email) && Objects.equals(trackVotes, userDto.trackVotes) &&
+                Objects.equals(trackVotes, userDto.trackVotes) &&
                 availableVotes.equals(userDto.availableVotes) &&
-                Objects.equals(lastVoteAttempt, userDto.lastVoteAttempt);
+                Objects.equals(lastVoteDate, userDto.lastVoteDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, username, password, email,
-                trackVotes, availableVotes, lastVoteAttempt);
+        return Objects.hash(emailId, username, password,
+                trackVotes, availableVotes, lastVoteDate);
     }
 
 }

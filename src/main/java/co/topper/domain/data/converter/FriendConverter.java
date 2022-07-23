@@ -25,7 +25,7 @@ public class FriendConverter {
                            List<AlbumEntity> albums,
                            List<ArtistEntity> artists) {
         return new FriendDto(
-            user.getId(),
+            user.getEmailId(),
             user.getUsername(),
             trackConverter.toTopDtoList(tracks,
                     albums,

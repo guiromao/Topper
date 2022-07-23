@@ -14,7 +14,6 @@ import java.util.Optional;
 public class UserRepositoryCustomImpl implements UserRepositoryCustom {
 
     private static final String FIELD_ID = "_id";
-    private static final String FIELD_TRACK_VOTES = "trackVotes";
     private static final String FIELD_EMAIL = "email";
 
     private final MongoTemplate mongoTemplate;
@@ -24,22 +23,9 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
     }
 
     @Override
-    public Optional<UserEntity> findByEmailNoCache(String email) {
-        Criteria emailCriteria = Criteria.where(FIELD_EMAIL).is(email);
-
-        return Optional.ofNullable(mongoTemplate.findOne(new Query(emailCriteria), UserEntity.class));
-    }
-
-    @Override
-    @Cacheable(value = RedisConfiguration.CACHE_USER_EMAILS)
-    public Optional<UserEntity> findByEmail(String email) {
-        return findByEmailNoCache(email);
-    }
-
-    @Override
-    public UserEntity updateUser(String userId, Update update) {
+    public UserEntity updateUser(String userEmail, Update update) {
         FindAndModifyOptions findAndModifyOptions = FindAndModifyOptions.options().returnNew(true);
-        Query query = new Query(Criteria.where(FIELD_ID).is(userId));
+        Query query = new Query(Criteria.where(FIELD_ID).is(userEmail));
 
         return mongoTemplate.findAndModify(query, update, findAndModifyOptions, UserEntity.class);
     }
