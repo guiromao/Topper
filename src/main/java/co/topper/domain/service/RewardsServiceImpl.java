@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class RewardsServiceImpl implements RewardsService {
 
-    private static final String KEY_EMAIL = "email";
-
     private final UserRepository userRepository;
     private final TokenReader tokenReader;
 

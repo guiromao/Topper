@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static co.topper.configuration.constants.ControllerConstants.APP;
+import static co.topper.configuration.constants.ControllerConstants.AUTHORIZATION_HEADER;
 import static co.topper.configuration.constants.ControllerConstants.VERSION;
 import static co.topper.configuration.constants.ControllerConstants.VOTE;
 
@@ -26,7 +27,7 @@ public class VoteController {
     }
 
     @PostMapping
-    public SuccessVoteDto vote(@RequestHeader("Authorization") String header,
+    public SuccessVoteDto vote(@RequestHeader(AUTHORIZATION_HEADER) String header,
                                @RequestBody VoteDto voteDto) {
         return voteService.vote(voteDto, header);
     }

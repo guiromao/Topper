@@ -2,7 +2,6 @@ package co.topper.domain.service;
 
 import co.topper.domain.data.converter.TrackConverter;
 import co.topper.domain.data.dto.TopDto;
-import co.topper.domain.data.dto.TrackDto;
 import co.topper.domain.data.entity.AlbumEntity;
 import co.topper.domain.data.entity.ArtistEntity;
 import co.topper.domain.data.entity.TrackEntity;
@@ -76,4 +75,5 @@ public class TopServiceImpl implements TopService {
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
     }
+
 }

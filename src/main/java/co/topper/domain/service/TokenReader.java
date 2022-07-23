@@ -26,8 +26,7 @@ public class TokenReader {
 
         Map<String, Object> jsonMap;
         try {
-            jsonMap = objectMapper.readValue(payload, new TypeReference<>() {
-                    });
+            jsonMap = objectMapper.readValue(payload, new TypeReference<>() {});
 
             return jsonMap.get("user_name").toString();
         } catch (Exception ex) {

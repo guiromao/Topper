@@ -5,7 +5,6 @@ import co.topper.domain.service.FriendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -27,31 +26,31 @@ public class FriendsController {
     }
 
     @GetMapping
-    public FriendDto getFriend(@RequestHeader("Authorization") String authHeader,
+    public FriendDto getFriend(@RequestHeader(AUTHORIZATION_HEADER) String authHeader,
                                @RequestParam("friendId") String friendId) {
         return friendService.getFriend(authHeader, friendId);
     }
 
     @PostMapping("/request")
-    public void sendRequest(@RequestHeader("Authorization") String authHeader,
+    public void sendRequest(@RequestHeader(AUTHORIZATION_HEADER) String authHeader,
                             @RequestParam("friendId") String friendId) {
         friendService.sendRequest(authHeader, friendId);
     }
 
     @PutMapping("/request")
-    public void acceptRequest(@RequestHeader("Authorization") String authHeader,
+    public void acceptRequest(@RequestHeader(AUTHORIZATION_HEADER) String authHeader,
                               @RequestParam("friendId") String friendId) {
         friendService.acceptRequest(authHeader, friendId);
     }
 
     @DeleteMapping("/request")
-    public void refuseRequest(@RequestHeader("Authorization") String authHeader,
+    public void refuseRequest(@RequestHeader(AUTHORIZATION_HEADER) String authHeader,
                               @RequestParam("friendId") String friendId) {
         friendService.refuseRequest(authHeader, friendId);
     }
 
     @DeleteMapping
-    public void deleteFriend(@RequestHeader("Authorization") String authHeader,
+    public void deleteFriend(@RequestHeader(AUTHORIZATION_HEADER) String authHeader,
                              @RequestParam("friendId") String friendId) {
         friendService.unfriend(authHeader, friendId);
     }
