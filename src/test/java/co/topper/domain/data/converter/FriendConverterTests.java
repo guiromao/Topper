@@ -27,7 +27,7 @@ class FriendConverterTests {
     @Test
     void testConvertFriend() {
         FriendDto test = friendConverter.toDto(userEntity(),
-                                               trackVotes(),
+                                               totalTrackVotes(),
                                                List.of(track()),
                                                List.of(album()),
                                                List.of(artist()));
@@ -50,7 +50,7 @@ class FriendConverterTests {
                 "user@mail.com",
                 Set.of("1", "2"),
                 Set.of("3"),
-                trackVotes(),
+                totalTrackVotes(),
                 20000L,
                 Instant.now(),
                 Set.of(Role.USER)
@@ -63,7 +63,7 @@ class FriendConverterTests {
                 "Track of my life",
                 Set.of("artist-1"),
                 "album-1",
-                1000L
+                50000L
         );
     }
 
@@ -84,7 +84,7 @@ class FriendConverterTests {
         );
     }
 
-    private Map<String, Long> trackVotes() {
+    private Map<String, Long> totalTrackVotes() {
         return Map.of("track-1", 40000L,
                 "track-2", 5000L);
     }
