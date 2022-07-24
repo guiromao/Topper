@@ -78,11 +78,12 @@ class VoteServiceTests {
     void testVote() {
         final Long validNumberOfVotes = 500L;
         final VoteDto vote = voteWithValue(validNumberOfVotes);
+        final UserEntity user = userWithAvailableVotes(DEFAULT_AVAILABLE_VOTES - 500L);
 
         when(trackRepository.vote(anyString(), any(Long.class)))
                 .thenReturn(trackExample());
         when(userRepository.updateUser(anyString(), any(Update.class)))
-                .thenReturn(userWithAvailableVotes(500L));
+                .thenReturn(user);
 
         SuccessVoteDto test = voteService.vote(vote, "token header value");
 
@@ -91,7 +92,7 @@ class VoteServiceTests {
         Assertions.assertEquals(trackExample().getId(), test.getTrackId());
         Assertions.assertEquals(trackExample().getName(), test.getTrackName());
         Assertions.assertEquals(
-                userWithAvailableVotes(500L).getTrackVotes().get(trackExample().getId()),
+                user.getTrackVotes().get(trackExample().getId()),
                 test.getTrackVotes()
         );
     }
@@ -129,4 +130,5 @@ class VoteServiceTests {
             1500L
         );
     }
+
 }
