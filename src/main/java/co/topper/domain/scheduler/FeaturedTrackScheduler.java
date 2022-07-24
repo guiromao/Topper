@@ -37,7 +37,7 @@ public class FeaturedTrackScheduler {
     }
 
     @Scheduled(fixedRate = HOUR_IN_MILLISECONDS * NUMBER_OF_HOURS)
-    public void saveRandomTopTrack() {
+    public void saveFeaturedTrack() {
         final String searchTerm = pickTerm();
         TrackDto trackDto = getTrack(searchTerm);
 
