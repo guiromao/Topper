@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import se.michaelthelin.spotify.model_objects.specification.Paging;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -49,9 +50,9 @@ public class TrackConverter {
     }
 
     public List<TopDto> toTopDtoList(List<TrackEntity> tracks,
-                                  List<AlbumEntity> albums,
-                                  List<ArtistEntity> artists,
-                                  Map<String, Long> trackVotes) {
+                                     List<AlbumEntity> albums,
+                                     List<ArtistEntity> artists,
+                                     Map<String, Long> trackVotes) {
 
         return tracks.stream()
                 .map(track -> new TopDto(
@@ -67,6 +68,7 @@ public class TrackConverter {
                                 track.getVotes()
                                 : trackVotes.get(track.getId())
                 ))
+                .sorted(Comparator.comparing(TopDto::getTotalVotes, Comparator.reverseOrder()))
                 .toList();
 
     }
