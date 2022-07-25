@@ -1,10 +1,9 @@
 package co.topper.domain.service;
 
-import co.topper.domain.data.entity.UserEntity;
-import co.topper.domain.data.repository.UserRepository;
 import co.topper.domain.exception.TokenReadException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Base64;
@@ -14,6 +13,7 @@ import java.util.Map;
 public class TokenReader {
     private final ObjectMapper objectMapper;
 
+    @Autowired
     public TokenReader(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
