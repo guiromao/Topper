@@ -78,7 +78,7 @@ class VoteServiceTests {
     void testVote() {
         final Long validNumberOfVotes = 500L;
         final VoteDto vote = voteWithValue(validNumberOfVotes);
-        final UserEntity user = userWithAvailableVotes(DEFAULT_AVAILABLE_VOTES - 500L);
+        final UserEntity user = userWithAvailableVotes(DEFAULT_AVAILABLE_VOTES - validNumberOfVotes);
 
         when(trackRepository.vote(anyString(), any(Long.class)))
                 .thenReturn(trackExample());

@@ -8,6 +8,7 @@ import co.topper.domain.data.entity.TrackEntity;
 import co.topper.domain.data.entity.UserEntity;
 import co.topper.domain.data.repository.UserRepository;
 import co.topper.domain.exception.FriendRequestNotFoundException;
+import co.topper.domain.exception.NonExistingFriendRequestException;
 import co.topper.domain.exception.NotFriendsConnectionException;
 import co.topper.domain.exception.RequestAlreadySentException;
 import co.topper.domain.exception.ResourceNotFoundException;
@@ -62,6 +63,11 @@ public class FriendServiceImpl implements FriendService {
     @Override
     public void acceptRequest(String authHeader, String friendId) {
         UserEntity user = fetchUserByToken(authHeader.split(" ")[1]);
+
+        // If does not have friend request from user with ID 'friendId'
+        if (!user.getRequestsReceivedIds().contains(friendId)) {
+            throw new NonExistingFriendRequestException(friendId);
+        }
 
         // In case both sent requests, attempts to remove both ID's from requests lists are done
         userRepository.updateUser(user.getEmailId(), new Update().pull(KEY_REQUEST_IDS, friendId));

@@ -19,7 +19,8 @@ public final class TrendyTermsConfiguration {
             "know", "be", "forever", "together", "hug",
             "born", "immortal", "brave", "courage", "bold", "fly",
             "run", "pace", "grace", "place", "laugh", "live", "breathe",
-            "punk", "lions", "growl", "scone"
+            "punk", "lions", "growl", "scone", "grow", "strength",
+            "faith", "ferrari", "speed", "sigma"
     );
 
     private TrendyTermsConfiguration() {

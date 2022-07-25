@@ -4,6 +4,7 @@ import co.topper.domain.exception.ConnectivityFailureException;
 import co.topper.domain.exception.EmptySearchTextException;
 import co.topper.domain.exception.FriendRequestNotFoundException;
 import co.topper.domain.exception.InvalidArgumentsException;
+import co.topper.domain.exception.NonExistingFriendRequestException;
 import co.topper.domain.exception.NotEnoughAvailableVotesException;
 import co.topper.domain.exception.NotFriendsConnectionException;
 import co.topper.domain.exception.RequestAlreadySentException;
@@ -41,7 +42,8 @@ public class TopperControllerAdvice {
     @ExceptionHandler({UserAlreadyExistingException.class, EmptySearchTextException.class,
             InvalidArgumentsException.class, TokenReadException.class,
             NotEnoughAvailableVotesException.class, NotFriendsConnectionException.class,
-            RequestAlreadySentException.class, UserAlreadyFriendsException.class})
+            RequestAlreadySentException.class, UserAlreadyFriendsException.class,
+            NonExistingFriendRequestException.class})
     public ResponseEntity<Object> handleBadRequest(Exception ex) {
         ErrorResponse response = ErrorResponse.of(HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(), ex.getMessage());
