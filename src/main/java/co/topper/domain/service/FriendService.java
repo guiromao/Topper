@@ -12,6 +12,6 @@ public interface FriendService {
 
     FriendDto getFriend(String authHeader, String friendId);
 
-    void unfriend(String userId, String friendId);
+    void unfriend(String authHeader, String friendId);
 
 }

@@ -1,6 +1,5 @@
 package co.topper;
 
-import co.topper.domain.data.dto.AlbumDto;
 import co.topper.domain.data.dto.TrackDto;
 import co.topper.domain.service.MusicSearchService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +33,5 @@ public class TopperApplication implements CommandLineRunner {
 			System.out.println();
 		});
 
-		Set<AlbumDto> albums = discoveryService.searchAlbums("Hybrid Theory");
-
-		albums.forEach(System.out::println);
 	}
 }

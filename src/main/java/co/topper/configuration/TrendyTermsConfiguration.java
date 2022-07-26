@@ -3,7 +3,7 @@ package co.topper.configuration;
 import java.util.List;
 
 /**
- * Terms configuration that will be used to search for the "Track of the Hour"
+ * Terms configuration that will be used to search for the "Featured Track"
  */
 public final class TrendyTermsConfiguration {
 
@@ -20,7 +20,8 @@ public final class TrendyTermsConfiguration {
             "born", "immortal", "brave", "courage", "bold", "fly",
             "run", "pace", "grace", "place", "laugh", "live", "breathe",
             "punk", "lions", "growl", "scone", "grow", "strength",
-            "faith", "ferrari", "speed", "sigma"
+            "faith", "ferrari", "speed", "sigma", "move",
+            "energy", "consciousness", "sovereign", "wise"
     );
 
     private TrendyTermsConfiguration() {

@@ -69,13 +69,11 @@ public class FriendServiceImpl implements FriendService {
             throw new NonExistingFriendRequestException(friendId);
         }
 
-        // In case both sent requests, attempts to remove both ID's from requests lists are done
-        userRepository.updateUser(user.getEmailId(), new Update().pull(KEY_REQUEST_IDS, friendId));
-        userRepository.updateUser(friendId, new Update().pull(KEY_REQUEST_IDS, user.getEmailId()));
-
-        // Add friend ID's to friends-list of both
-        userRepository.updateUser(user.getEmailId(), new Update().push(KEY_FRIENDS, friendId));
-        userRepository.updateUser(friendId, new Update().push(KEY_FRIENDS, user.getEmailId()));
+        // Remove both emailId's from requests, and adding each other to list of friends
+        userRepository.updateUser(user.getEmailId(),
+                new Update().pull(KEY_REQUEST_IDS, friendId).push(KEY_FRIENDS, friendId));
+        userRepository.updateUser(friendId,
+                new Update().pull(KEY_REQUEST_IDS, user.getEmailId()).push(KEY_FRIENDS, user.getEmailId()));
     }
 
     @Override

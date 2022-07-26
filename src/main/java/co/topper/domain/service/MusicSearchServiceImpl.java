@@ -43,18 +43,12 @@ public class MusicSearchServiceImpl implements MusicSearchService {
 
     private final SpotifyApi spotifyApi;
     private final TrackConverter trackConverter;
-    private final ArtistConverter artistConverter;
-    private final AlbumConverter albumConverter;
 
     @Autowired
     public MusicSearchServiceImpl(SpotifyApi spotifyApi,
-                                  TrackConverter trackConverter,
-                                  ArtistConverter artistConverter,
-                                  AlbumConverter albumConverter) {
+                                  TrackConverter trackConverter) {
         this.spotifyApi = spotifyApi;
         this.trackConverter = trackConverter;
-        this.artistConverter = artistConverter;
-        this.albumConverter = albumConverter;
     }
 
     @Override
@@ -73,81 +67,6 @@ public class MusicSearchServiceImpl implements MusicSearchService {
 
         } catch (IOException | SpotifyWebApiException | ParseException e) {
             throw new ConnectivityFailureException(TrackEntity.class);
-        }
-    }
-
-    @Override
-    public TrackDto findTrackById(String trackId) {
-        GetTrackRequest trackRequest = spotifyApi.getTrack(trackId).build();
-
-        try {
-            Track track = trackRequest.execute();
-
-            return trackConverter.toDto(track);
-
-        } catch (IOException | SpotifyWebApiException | ParseException e) {
-            throw new ConnectivityFailureException(TrackEntity.class);
-        }
-    }
-
-    @Override
-    @Cacheable(value = CACHE_ARTIST_SERVICE)
-    public Set<ArtistDto> searchArtists(String value) {
-        SearchArtistsRequest artistsRequest = spotifyApi.searchArtists(value)
-                .limit(NUMBER_RESULTS)
-                .build();
-
-        try {
-            Paging<Artist> artists = artistsRequest.execute();
-
-            return artistConverter.toDtoSet(artists);
-
-        } catch (IOException | SpotifyWebApiException | ParseException e) {
-            throw new ConnectivityFailureException(ArtistEntity.class);
-        }
-    }
-
-    @Override
-    public ArtistDto findArtistById(String artistId) {
-        GetArtistRequest searchArtist = spotifyApi.getArtist(artistId).build();
-
-        try {
-            Artist artist = searchArtist.execute();
-            return artistConverter.toDto(artist);
-
-        } catch (IOException | SpotifyWebApiException | ParseException e) {
-            throw new ConnectivityFailureException(ArtistEntity.class);
-        }
-    }
-
-    @Override
-    @Cacheable(value = CACHE_ALBUMS_SERVICE)
-    public Set<AlbumDto> searchAlbums(String value) {
-        final SearchAlbumsRequest searchAlbums = spotifyApi.searchAlbums(value)
-                .limit(NUMBER_RESULTS)
-                .build();
-
-        try {
-            Paging<AlbumSimplified> albums = searchAlbums.execute();
-
-            return albumConverter.toDtoSet(albums);
-
-        } catch (IOException | SpotifyWebApiException | ParseException e) {
-            throw new ConnectivityFailureException(AlbumEntity.class);
-        }
-    }
-
-    @Override
-    public AlbumDto findAlbumById(String albumId) {
-        GetAlbumRequest albumRequest = spotifyApi.getAlbum(albumId).build();
-
-        try {
-            Album album = albumRequest.execute();
-
-            return albumConverter.toDto(album);
-
-        } catch (IOException | SpotifyWebApiException | ParseException e) {
-            throw new ConnectivityFailureException(AlbumEntity.class);
         }
     }
 
