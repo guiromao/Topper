@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.CollectionUtils;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.model_objects.specification.Paging;
 
@@ -50,6 +51,7 @@ class MusicSearchServiceTests {
         Set<TrackDto> test = musicSearchService.searchTracks("song");
 
         Assertions.assertNotNull(test);
+        Assertions.assertFalse(CollectionUtils.isEmpty(test));
     }
 
     private TrackDto trackDto() {
