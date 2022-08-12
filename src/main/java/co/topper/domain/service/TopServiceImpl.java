@@ -40,14 +40,12 @@ public class TopServiceImpl implements TopService {
     }
 
     @Override
-    public List<TopDto> getTop(Integer limit, Integer offset) {
-        if (limit < 1 || offset < 0) {
-            throw new InvalidArgumentsException(limit, offset);
+    public List<TopDto> getTop(Integer page) {
+        if (page < 0) {
+            throw new InvalidArgumentsException(page);
         }
 
-        Pageable pageable = PageRequest.of(offset, limit);
-
-        List<TrackEntity> tracks = trackRepository.getTop(pageable);
+        List<TrackEntity> tracks = trackRepository.getTop(page);
         List<AlbumEntity> albums = fetchAlbums(extractAlbumIds(tracks));
         List<ArtistEntity> artists = fetchArtists(extractArtistIds(tracks));
 

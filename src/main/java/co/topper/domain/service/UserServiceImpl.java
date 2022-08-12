@@ -5,6 +5,8 @@ import co.topper.domain.data.dto.UserDto;
 import co.topper.domain.data.entity.UserEntity;
 import co.topper.domain.data.repository.UserRepository;
 import co.topper.domain.exception.ResourceNotFoundException;
+import co.topper.domain.message.MessageProducer;
+import co.topper.domain.message.data.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +21,17 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserConverter userConverter;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final MessageProducer messageProducer;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository,
                            UserConverter userConverter,
-                           BCryptPasswordEncoder passwordEncoder) {
+                           BCryptPasswordEncoder passwordEncoder,
+                           MessageProducer messageProducer) {
         this.userRepository = userRepository;
         this.userConverter = userConverter;
         this.passwordEncoder = passwordEncoder;
+        this.messageProducer = messageProducer;
     }
 
     @Override
@@ -53,6 +58,9 @@ public class UserServiceImpl implements UserService {
 
         if (!userRepository.existsById(userDto.getEmailId())) {
             user = UserEntity.create(userDto.getEmailId(), userDto.getUsername(), userDto.getPassword());
+
+            // Send message to Service that manages welcome emails to new users
+            messageProducer.send(Message.fromUser(user));
         } else {
             user = userRepository.findById(userDto.getEmailId())
                     .orElseThrow(() -> new ResourceNotFoundException(userDto.getEmailId(), UserEntity.class));

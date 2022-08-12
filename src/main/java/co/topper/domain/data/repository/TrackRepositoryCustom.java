@@ -10,7 +10,7 @@ public interface TrackRepositoryCustom {
 
     TrackEntity vote(String trackId, Long votes);
 
-    List<TrackEntity> getTop(Pageable page);
+    List<TrackEntity> getTop(Integer page);
 
     Optional<TrackEntity> getFeaturedTrack();
 

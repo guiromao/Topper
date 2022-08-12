@@ -24,9 +24,8 @@ public class TopController {
     }
 
     @GetMapping
-    public List<TopDto> getTop(@RequestParam("offset") Integer offset,
-                               @RequestParam("limit") Integer limit) {
-        return topService.getTop(limit, offset);
+    public List<TopDto> getTop(@RequestParam("page") Integer page) {
+        return topService.getTop(page);
     }
 
 }

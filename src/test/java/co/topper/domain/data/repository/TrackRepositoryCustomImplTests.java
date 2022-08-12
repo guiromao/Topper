@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
@@ -55,7 +54,7 @@ class TrackRepositoryCustomImplTests {
 
         when(mongoTemplate.find(any(Query.class), any(Class.class))).thenReturn(tracks);
 
-        List<TrackEntity> test = trackRepositoryCustom.getTop(PageRequest.of(0, 100));
+        List<TrackEntity> test = trackRepositoryCustom.getTop(0);
 
         verify(mongoTemplate, times(1)).find(any(Query.class), any(Class.class));
         Assertions.assertEquals(tracks.size(), test.size());

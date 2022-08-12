@@ -17,6 +17,7 @@ public class TrackRepositoryCustomImpl implements TrackRepositoryCustom {
 
     private static final String KEY_ID = "_id";
     private static final String KEY_VOTES = "votes";
+    private static final Long NUMBER_OF_RESULTS = 20L;
 
     private final MongoTemplate mongoTemplate;
 
@@ -34,10 +35,12 @@ public class TrackRepositoryCustomImpl implements TrackRepositoryCustom {
     }
 
     @Override
-    public List<TrackEntity> getTop(Pageable page) {
+    public List<TrackEntity> getTop(Integer page) {
         return mongoTemplate.find(
                 new Query(Criteria.where(KEY_ID).ne(TrackEntity.FEATURED_TRACK_ID))
-                        .with(Sort.by(Direction.DESC, KEY_VOTES)).with(page),
+                        .with(Sort.by(KEY_VOTES).ascending())
+                        .skip(page * NUMBER_OF_RESULTS)
+                        .limit(NUMBER_OF_RESULTS.intValue()),
                 TrackEntity.class
         );
     }
