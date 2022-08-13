@@ -6,6 +6,8 @@ import co.topper.domain.data.entity.Role;
 import co.topper.domain.data.entity.UserEntity;
 import co.topper.domain.data.repository.UserRepository;
 import co.topper.domain.exception.ResourceNotFoundException;
+import co.topper.domain.message.MessageProducer;
+import co.topper.domain.message.data.Message;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -43,11 +46,15 @@ class UserServiceTests {
     @Mock
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @Mock
+    MessageProducer messageProducer;
+
     UserService userService;
 
     @BeforeEach
     void setup() {
-        userService = new UserServiceImpl(userRepository, userConverter, bCryptPasswordEncoder);
+        userService = new UserServiceImpl(userRepository, userConverter,
+                bCryptPasswordEncoder, messageProducer);
 
         when(bCryptPasswordEncoder.encode(anyString())).thenReturn("encrypted-password");
     }
@@ -61,6 +68,7 @@ class UserServiceTests {
         UserDto test = userService.saveUser(userDto);
 
         verify(userRepository, times(0)).findById(anyString());
+        verify(messageProducer, times(1)).send(any(Message.class));
         Assertions.assertEquals(userDto, test);
     }
 
@@ -74,6 +82,7 @@ class UserServiceTests {
         UserDto test = userService.saveUser(userDto);
 
         Assertions.assertEquals(userDto, test);
+        verifyNoInteractions(messageProducer);
     }
 
     @Test

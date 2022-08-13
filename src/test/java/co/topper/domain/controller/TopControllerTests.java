@@ -51,7 +51,7 @@ class TopControllerTests extends AbstractionIntegrationTests {
     @Autowired
     ObjectMapper mapper;
 
-    @Autowired
+    //@Autowired
     MockMvc mockMvc;
 
     String token;

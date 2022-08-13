@@ -30,13 +30,13 @@ public class TokenService {
     private String secret;
 
     private final UserRepository userRepository;
-    private final MockMvc mockMvc;
+    //private final MockMvc mockMvc;
 
     @Autowired
-    public TokenService(UserRepository userRepository,
-                        MockMvc mockMvc) {
+    public TokenService(UserRepository userRepository
+                        /*MockMvc mockMvc*/) {
         this.userRepository = userRepository;
-        this.mockMvc = mockMvc;
+        //this.mockMvc = mockMvc;
     }
 
     public void createUser() {
