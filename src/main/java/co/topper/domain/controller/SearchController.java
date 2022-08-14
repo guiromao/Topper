@@ -22,7 +22,7 @@ public class SearchController {
     }
 
     @GetMapping
-    public Set<TrackDto> search(@RequestParam String text) {
+    public Set<TrackDto> search(@RequestParam("text") String text) {
         return searchService.searchTracks(text);
     }
 

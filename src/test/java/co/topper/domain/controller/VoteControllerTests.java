@@ -15,7 +15,6 @@ import co.topper.domain.data.repository.ArtistRepository;
 import co.topper.domain.data.repository.TrackRepository;
 import co.topper.domain.data.repository.UserRepository;
 import co.topper.domain.exception.ErrorResponse;
-import co.topper.domain.exception.NotEnoughAvailableVotesException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.http.Header;
 import io.restassured.http.Headers;
@@ -82,6 +81,8 @@ class VoteControllerTests extends AbstractionIntegrationTests {
 
     @BeforeEach
     void setup() throws Exception {
+        teardown();
+
         userRepository.save(user);
         trackRepository.save(track);
         albumRepository.save(album);
@@ -89,6 +90,14 @@ class VoteControllerTests extends AbstractionIntegrationTests {
 
         token = getToken(user.getEmailId(), password);
         headers = new Headers(new Header("Authorization", "Bearer " + token));
+    }
+
+    @BeforeEach
+    void teardown() {
+        userRepository.deleteAll();
+        trackRepository.deleteAll();
+        albumRepository.deleteAll();
+        artistRepository.deleteAll();
     }
 
     @Test
