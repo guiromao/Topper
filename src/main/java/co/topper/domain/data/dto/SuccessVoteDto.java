@@ -1,6 +1,7 @@
 package co.topper.domain.data.dto;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -22,7 +23,10 @@ public class SuccessVoteDto {
     private final String trackName;
     private final Long trackVotes;
 
-    public SuccessVoteDto(String trackId, String trackName, Long trackVotes) {
+    @JsonCreator
+    public SuccessVoteDto(@JsonProperty(PROPERTY_TRACK_ID) String trackId,
+                          @JsonProperty(PROPERTY_TRACK_NAME) String trackName,
+                          @JsonProperty(PROPERTY_TRACK_VOTES) Long trackVotes) {
         this.trackId = trackId;
         this.trackName = trackName;
         this.trackVotes = trackVotes;

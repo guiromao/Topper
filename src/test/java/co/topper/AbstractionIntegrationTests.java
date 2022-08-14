@@ -83,15 +83,16 @@ public abstract class AbstractionIntegrationTests {
         }
     }
 
-    protected ValidatableResponse login(ResponseSpecification responseSpec) {
+    protected ValidatableResponse login(String emailId, String password,
+                                        ResponseSpecification responseSpec) {
 
         try {
             final URL url = new URL("http://localhost:" + port + "/");
             return given().filter(new RequestLoggingFilter()).filter(new ResponseLoggingFilter())
                     .baseUri(url.toString())
                     .auth().basic("topper-app", secret)
-                    .queryParam("username", "test-id-123@mail.com")
-                    .queryParam("password", "pass")
+                    .queryParam("username", emailId)
+                    .queryParam("password", password)
                     .queryParam("grant_type", "password")
                     .queryParam("scopes", "read write")
                     .contentType(ContentType.JSON)
@@ -102,8 +103,8 @@ public abstract class AbstractionIntegrationTests {
         }
     }
 
-    protected String getToken() throws Exception {
-        String responseJson = login(responseOk()).extract().asString();
+    protected String getToken(String emailId, String password) throws Exception {
+        String responseJson = login(emailId, password, responseOk()).extract().asString();
 
         TokenObject tokenObject = mapper.readValue(responseJson, TokenObject.class);
 
@@ -115,6 +116,14 @@ public abstract class AbstractionIntegrationTests {
                 .expectBody(not(emptyOrNullString()))
                 .expectContentType(ContentType.JSON)
                 .expectStatusCode(HttpStatus.OK.value())
+                .build();
+    }
+
+    protected ResponseSpecification withStatus(HttpStatus status) {
+        return new ResponseSpecBuilder()
+                .expectBody(not(emptyOrNullString()))
+                .expectContentType(ContentType.JSON)
+                .expectStatusCode(status.value())
                 .build();
     }
 

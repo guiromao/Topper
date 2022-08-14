@@ -4,7 +4,6 @@ import co.topper.AbstractionIntegrationTests;
 import co.topper.domain.data.entity.Role;
 import co.topper.domain.data.entity.UserEntity;
 import co.topper.domain.data.repository.UserRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.http.Header;
 import io.restassured.http.Headers;
 import org.junit.jupiter.api.AfterEach;
@@ -16,16 +15,21 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.Instant;
 import java.util.Collections;
+import java.util.Date;
+import java.util.Objects;
 import java.util.Set;
 
 class RewardsControllerTests extends AbstractionIntegrationTests {
 
     static final String ROOT_PATH = "/topper/v1/rewards";
 
+    // To be used on Login
+    final String password = "pass";
+
     final UserEntity user = new UserEntity(
             "test-id-123@mail.com",
             "username-123",
-            new BCryptPasswordEncoder().encode("pass"),
+            new BCryptPasswordEncoder().encode(password),
             Collections.emptySet(),
             Collections.emptySet(), Collections.emptyMap(),
             1000L, Instant.now(), Set.of(Role.USER)
@@ -34,17 +38,17 @@ class RewardsControllerTests extends AbstractionIntegrationTests {
     @Autowired
     UserRepository userRepository;
 
-    @Autowired
-    ObjectMapper mapper;
-
     String token;
+
+    Headers headers;
 
     @BeforeEach
     void setup() throws Exception {
         teardown();
         userRepository.save(user);
 
-        token = getToken();
+        token = getToken(user.getEmailId(), password);
+        headers = new Headers(new Header("Authorization", "Bearer " + token));
     }
 
     @AfterEach
@@ -57,7 +61,6 @@ class RewardsControllerTests extends AbstractionIntegrationTests {
         final Long votes = 1000L;
 
         final String rewardsPath = ROOT_PATH + "?rewardedVotes=" + votes;
-        Headers headers = new Headers(new Header("Authorization", "Bearer " + token));
 
         post(rewardsPath, headers, null, okStatus());
 
