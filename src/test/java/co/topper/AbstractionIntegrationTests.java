@@ -10,6 +10,7 @@ import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.ResponseSpecification;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -25,12 +26,13 @@ import static org.hamcrest.Matchers.not;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @ActiveProfiles(value = "test")
+@Profile("test")
 public abstract class AbstractionIntegrationTests {
 
     @LocalServerPort
     protected int port;
 
-    /*protected ValidatableResponse get(String path, ResponseSpecification responseSpec) {
+    protected ValidatableResponse get(String path, ResponseSpecification responseSpec) {
         try {
             final URL url = new URL("http://localhost:" + port + "/");
             return given().filter(new RequestLoggingFilter()).filter(new ResponseLoggingFilter())
@@ -40,7 +42,7 @@ public abstract class AbstractionIntegrationTests {
         } catch (MalformedURLException e) {
             throw new IllegalStateException();
         }
-    }*/
+    }
 
     protected ValidatableResponse post(String path, Headers headers, ResponseSpecification responseSpec) {
         try {

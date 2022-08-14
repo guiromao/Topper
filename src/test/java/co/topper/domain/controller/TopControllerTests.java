@@ -1,7 +1,6 @@
 package co.topper.domain.controller;
 
 import co.topper.AbstractionIntegrationTests;
-import co.topper.domain.controller.service.TokenService;
 import co.topper.domain.data.dto.TopDto;
 import co.topper.domain.data.entity.AlbumEntity;
 import co.topper.domain.data.entity.ArtistEntity;
@@ -14,30 +13,17 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-@AutoConfigureMockMvc
 class TopControllerTests extends AbstractionIntegrationTests {
 
-    final String ROOT_PATH = "/topper/v1/top";
-
-    // Test Service class to generate Tokens
-    @Autowired
-    TokenService tokenService;
+    final String ROOT_PATH = "topper/v1/top";
 
     @Autowired
     TrackRepository trackRepository;
@@ -84,9 +70,6 @@ class TopControllerTests extends AbstractionIntegrationTests {
         trackRepository.saveAll(tracks);
         albumRepository.saveAll(albums);
         artistRepository.saveAll(artists);
-
-        tokenService.createUser();
-        token = getToken();
     }
 
     @AfterEach
@@ -94,45 +77,16 @@ class TopControllerTests extends AbstractionIntegrationTests {
         trackRepository.deleteAll();
         albumRepository.deleteAll();
         artistRepository.deleteAll();
-
-        tokenService.deleteUser();
     }
 
     @Test
-    @WithMockUser(username = "test", roles = {"USER", "ADMIN"})
     void testGetTop() throws Exception {
-        MvcResult result =
-                this.mockMvc.perform(get(ROOT_PATH).header("Authorization", "Bearer " + token))
-                        .andExpect(status().isOk()).andReturn();
-
-        String responseJson = result.getResponse().getContentAsString();
+        final String topPath = ROOT_PATH + "?page=0";
+        String responseJson = get(topPath, responseOk()).extract().asString();
 
         List<TopDto> test = Stream.of(mapper.readValue(responseJson, TopDto[].class)).toList();
 
         Assertions.assertEquals(tracks.size(), test.size());
     }
 
-    private String getToken() {
-        String body = "{\"username\":\"test@mail.com\", \"password\":\"test-123\"}";
-
-        MvcResult result = null;
-        try {
-            result = mockMvc.perform(MockMvcRequestBuilders.post("/v2/token")
-                            .content(body))
-                    .andExpect(status().isOk()).andReturn();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        String response = null;
-        try {
-            response = result.getResponse().getContentAsString();
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-        response = response.replace("{\"access_token\": \"", "");
-        String token = response.replace("\"}", "");
-
-        return token;
-    }
 }
