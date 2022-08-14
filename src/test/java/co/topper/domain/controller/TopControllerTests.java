@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -36,11 +35,6 @@ class TopControllerTests extends AbstractionIntegrationTests {
 
     @Autowired
     ObjectMapper mapper;
-
-    //@Autowired
-    MockMvc mockMvc;
-
-    String token;
 
     List<TrackEntity> tracks = List.of(
             new TrackEntity("track-1", "track-name-1", Set.of("artist-1"),
@@ -82,7 +76,7 @@ class TopControllerTests extends AbstractionIntegrationTests {
     @Test
     void testGetTop() throws Exception {
         final String topPath = ROOT_PATH + "?page=0";
-        String responseJson = get(topPath, responseOk()).extract().asString();
+        String responseJson = get(topPath, null, responseOk()).extract().asString();
 
         List<TopDto> test = Stream.of(mapper.readValue(responseJson, TopDto[].class)).toList();
 

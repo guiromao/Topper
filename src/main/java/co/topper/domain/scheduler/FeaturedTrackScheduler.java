@@ -7,6 +7,7 @@ import co.topper.domain.data.entity.TrackEntity;
 import co.topper.domain.data.repository.TrackRepository;
 import co.topper.domain.service.DataManager;
 import co.topper.domain.service.MusicSearchService;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,7 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+@Profile("!test")
 @Component
 public class FeaturedTrackScheduler {
 
