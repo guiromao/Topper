@@ -52,7 +52,7 @@ public abstract class AbstractionIntegrationTests {
         try {
             final URL url = new URL("http://localhost:" + port + "/");
             return given().filter(new RequestLoggingFilter()).filter(new ResponseLoggingFilter())
-                    .baseUri(url.toString())
+                    .baseUri(url.toString()).headers(headers)
                     .when().get(path)
                     .then().spec(responseSpec);
         } catch (MalformedURLException e) {
@@ -77,6 +77,46 @@ public abstract class AbstractionIntegrationTests {
                     .body(bodyJson)
                     .contentType(ContentType.JSON)
                     .when().post(path)
+                    .then().spec(responseSpec);
+        } catch (MalformedURLException e) {
+            throw new IllegalStateException();
+        }
+    }
+
+    protected ValidatableResponse put(String path, Headers headers,
+                                       String bodyJson, ResponseSpecification responseSpec) {
+        if (Objects.isNull(headers)) {
+            headers = new Headers(new Header("name", "value"));
+        }
+
+        if (Objects.isNull(bodyJson)) {
+            bodyJson = "";
+        }
+
+        try {
+            final URL url = new URL("http://localhost:" + port + "/");
+            return given().filter(new RequestLoggingFilter()).filter(new ResponseLoggingFilter())
+                    .baseUri(url.toString()).headers(headers)
+                    .body(bodyJson)
+                    .contentType(ContentType.JSON)
+                    .when().put(path)
+                    .then().spec(responseSpec);
+        } catch (MalformedURLException e) {
+            throw new IllegalStateException();
+        }
+    }
+
+    protected ValidatableResponse delete(String path, Headers headers,
+                                      ResponseSpecification responseSpec) {
+        if (Objects.isNull(headers)) {
+            headers = new Headers(new Header("name", "value"));
+        }
+
+        try {
+            final URL url = new URL("http://localhost:" + port + "/");
+            return given().filter(new RequestLoggingFilter()).filter(new ResponseLoggingFilter())
+                    .baseUri(url.toString()).headers(headers)
+                    .when().delete(path)
                     .then().spec(responseSpec);
         } catch (MalformedURLException e) {
             throw new IllegalStateException();
