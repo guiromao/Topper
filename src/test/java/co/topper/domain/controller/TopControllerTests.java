@@ -81,6 +81,13 @@ class TopControllerTests extends AbstractionIntegrationTests {
         List<TopDto> test = Stream.of(mapper.readValue(responseJson, TopDto[].class)).toList();
 
         Assertions.assertEquals(tracks.size(), test.size());
+
+        for (int i = 0; i < test.size() - 1; i++) {
+            TopDto track = test.get(i);
+            TopDto nextTrack = test.get(i + 1);
+
+            Assertions.assertTrue(track.getTotalVotes() >= nextTrack.getTotalVotes());
+        }
     }
 
 }

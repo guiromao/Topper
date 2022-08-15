@@ -38,7 +38,7 @@ public class TrackRepositoryCustomImpl implements TrackRepositoryCustom {
     public List<TrackEntity> getTop(Integer page) {
         return mongoTemplate.find(
                 new Query(Criteria.where(KEY_ID).ne(TrackEntity.FEATURED_TRACK_ID))
-                        .with(Sort.by(KEY_VOTES).ascending())
+                        .with(Sort.by(KEY_VOTES).descending())
                         .skip(page * NUMBER_OF_RESULTS)
                         .limit(NUMBER_OF_RESULTS.intValue()),
                 TrackEntity.class
