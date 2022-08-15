@@ -54,7 +54,7 @@ class TrackRepositoryCustomImplTests {
 
         when(mongoTemplate.find(any(Query.class), any(Class.class))).thenReturn(tracks);
 
-        List<TrackEntity> test = trackRepositoryCustom.getTop(0);
+        List<TrackEntity> test = trackRepositoryCustom.getTop(0, 5);
 
         verify(mongoTemplate, times(1)).find(any(Query.class), any(Class.class));
         Assertions.assertEquals(tracks.size(), test.size());

@@ -1,9 +1,7 @@
 package co.topper.domain.data.repository;
 
 import co.topper.domain.data.entity.TrackEntity;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -17,7 +15,6 @@ public class TrackRepositoryCustomImpl implements TrackRepositoryCustom {
 
     private static final String KEY_ID = "_id";
     private static final String KEY_VOTES = "votes";
-    private static final Long NUMBER_OF_RESULTS = 20L;
 
     private final MongoTemplate mongoTemplate;
 
@@ -35,12 +32,12 @@ public class TrackRepositoryCustomImpl implements TrackRepositoryCustom {
     }
 
     @Override
-    public List<TrackEntity> getTop(Integer page) {
+    public List<TrackEntity> getTop(Integer offset, Integer limit) {
         return mongoTemplate.find(
                 new Query(Criteria.where(KEY_ID).ne(TrackEntity.FEATURED_TRACK_ID))
                         .with(Sort.by(KEY_VOTES).descending())
-                        .skip(page * NUMBER_OF_RESULTS)
-                        .limit(NUMBER_OF_RESULTS.intValue()),
+                        .skip(offset)
+                        .limit(limit),
                 TrackEntity.class
         );
     }

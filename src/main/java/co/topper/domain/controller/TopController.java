@@ -1,6 +1,7 @@
 package co.topper.domain.controller;
 
 import co.topper.domain.data.dto.TopDto;
+import co.topper.domain.exception.InvalidArgumentsException;
 import co.topper.domain.service.TopService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,8 +25,21 @@ public class TopController {
     }
 
     @GetMapping
-    public List<TopDto> getTop(@RequestParam("page") Integer page) {
-        return topService.getTop(page);
+    public List<TopDto> getTop(@RequestParam("offset") Integer offset,
+                               @RequestParam("limit") Integer limit) {
+        validateParams(offset, limit);
+
+        return topService.getTop(offset, limit);
+    }
+
+    private void validateParams(Integer offset, Integer limit) {
+        if (offset < 0) {
+            throw new InvalidArgumentsException(offset);
+        }
+
+        if (limit < 1) {
+            throw new InvalidArgumentsException(limit);
+        }
     }
 
 }

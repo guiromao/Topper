@@ -8,10 +8,7 @@ import co.topper.domain.data.entity.TrackEntity;
 import co.topper.domain.data.repository.AlbumRepository;
 import co.topper.domain.data.repository.ArtistRepository;
 import co.topper.domain.data.repository.TrackRepository;
-import co.topper.domain.exception.InvalidArgumentsException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -40,12 +37,8 @@ public class TopServiceImpl implements TopService {
     }
 
     @Override
-    public List<TopDto> getTop(Integer page) {
-        if (page < 0) {
-            throw new InvalidArgumentsException(page);
-        }
-
-        List<TrackEntity> tracks = trackRepository.getTop(page);
+    public List<TopDto> getTop(Integer offset, Integer limit) {
+        List<TrackEntity> tracks = trackRepository.getTop(offset, limit);
         List<AlbumEntity> albums = fetchAlbums(extractAlbumIds(tracks));
         List<ArtistEntity> artists = fetchArtists(extractArtistIds(tracks));
 

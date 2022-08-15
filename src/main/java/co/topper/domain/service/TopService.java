@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface TopService {
 
-    List<TopDto> getTop(Integer page);
+    List<TopDto> getTop(Integer offset, Integer limit);
 
 }
